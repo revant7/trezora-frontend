@@ -30,7 +30,7 @@ export default function Navbar() {
                             (item) => (
 
                                 <div>
-                                    <Link to={item}><span className="text-white text-lg font-bold">{item}</span></Link>
+                                    <Link to={item.replace(" ", "-").toLowerCase()}><span className="text-white text-lg font-bold">{item}</span></Link>
                                 </div>
 
                             )
