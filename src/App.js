@@ -9,9 +9,13 @@ function App() {
   return (
     <>
       <Navbar />
+      <div className="bg-black-400 py-12">
+        Hello
+      </div>
       <Catagories />
       <Carrousel />
       <Grid />
+
 
     </>
   );
