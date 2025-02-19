@@ -1,10 +1,10 @@
 import React from 'react'
-import '../css/Navbar.css'
+
 
 export default function Navbar() {
     return (
         <div className="nav">
-            <nav className="navbar">
+            <nav className="bg-black">
                 <span className="brand-name">Trez</span>
                 <img className="brand-name-image" src="/images/finalshoplogo.ico" alt="logo" width="66.5px" height="50px" />
                 <span className="brand-name">ra</span>

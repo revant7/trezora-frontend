@@ -1,9 +1,9 @@
-import './App.css';
+import './css/App.css';
 import Navbar from './components/Navbar.js';
 import Carrousel from './components/Carrousel.js'
 import Catagories from './components/Catagory.js'
 import Grid from './components/ItemsHome.js'
-import './css/Index.css'
+
 
 function App() {
   return (
