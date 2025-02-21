@@ -10,7 +10,7 @@ export default function Catagory() {
                 catagories.map(
                     (item) => (
                         <div div className="">
-                            <div className="">
+                            <div className="hover:scale-110">
                                 <img src={`/images/${item.replace(" ", "_")}.ico`} alt={item} height="100px" width="100px" className="rounded-full border-4 border-s-black" />
                             </div>
                             <div className="text-container">
