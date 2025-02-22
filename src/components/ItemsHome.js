@@ -12,6 +12,10 @@ export default function ItemsHome() {
 
     }, []);
 
+    const addToCart = (() => {
+
+    })
+
     return (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 p-4">
             {
@@ -40,7 +44,7 @@ export default function ItemsHome() {
                             </div>
 
                             <button
-                                className="w-full py-2 px-4 bg-gradient-to-r from-blue-500 to-purple-500 text-white font-semibold rounded-lg hover:from-purple-500 hover:to-blue-500 transition-transform transform hover:scale-105 shadow-md"
+                                className="w-full py-2 px-4 bg-gradient-to-r from-blue-500 to-purple-500 text-white font-semibold rounded-lg hover:from-purple-500 hover:to-blue-500 transition-transform transform hover:scale-105 shadow-md" onClick={addToCart}
                             >
                                 Add to Cart
                             </button>
