@@ -7,6 +7,7 @@ import Cart from './components/Cart.js';
 import Footer from './components/Footer.js'
 import SignIn from './pages/SignIn.js';
 import CreateAccount from './pages/CreateAccount.js';
+import Orders from './components/Orders.js'
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
 
@@ -21,7 +22,8 @@ function App() {
       <Routes>
         <Route path="sign-in" element={<><Navbar /> <SignIn /></>}></Route>
         <Route path="create-account" element={<><Navbar /> <CreateAccount /></>}></Route>
-        <Route path="cart" element={<><Navbar /> <Cart /></>} />
+        <Route path="cart" element={<><Navbar /> <Cart cartItems={[]} /></>} />
+        <Route path="orders" element={<><Navbar /> <Orders orders={[]} /></>} />
         <Route path="" element={<><Navbar /> <Catagories /> <Carrousel /> <Grid /></>} />
       </Routes>
 
