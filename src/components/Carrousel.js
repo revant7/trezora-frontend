@@ -22,16 +22,30 @@ export default function Category() {
     };
 
     return (
-        <div className="" style={{ height: "400px", width: "800px", display: "flex", justifyContent: "center", alignItems: "center" }}>
-            <div className="overflow-hidden w-600px h-400px">
+        <div
+            className="relative"
+            style={{
+                height: "50vh", // full height of the viewport
+                width: "99vw", // full width of the viewport
+                overflow: "hidden",
+            }}
+        >
+            <div className="overflow-hidden w-full h-full relative">
                 <div
                     ref={carouselRef}
                     className="flex transition-transform duration-700 ease-in-out"
-                    style={{ transform: `translateX(-${currentIndex * 100}%)`, width: `${categories.length * 100}%` }}
+                    style={{
+                        transform: `translateX(-${currentIndex * 100}%)`,
+                        width: `${categories.length * 100}%`,
+                    }}
                 >
                     {categories.map((item, index) => (
-                        <div key={index} className="w-full flex-shrink-0" style={{ width: "100%" }}>
-                            <img src={`/images/${item}`} alt={item} width={"800px"} height={"400px"} className="object-cover rounded-lg shadow-md" />
+                        <div key={index} className="w-full flex-shrink-0">
+                            <img
+                                src={`/images/${item}`}
+                                alt={item}
+                                className="object-cover w-screen " // Ensure it takes up full space
+                            />
                         </div>
                     ))}
                 </div>
