@@ -39,7 +39,7 @@ export default function Navbar() {
                         <Link
                             key={item}
                             to={item === "Home" ? "/" : `/${item.replace(" ", "-").toLowerCase()}`}
-                            className="text-white text-sm font-semibold hover:text-yellow-300 transition duration-200"
+                            className="text-white text-sm font-semibold hover:text-yellow-300 transition duration-200 whitespace-nowrap"
                         >
                             {item}
                         </Link>
@@ -47,14 +47,32 @@ export default function Navbar() {
                 </div>
 
                 {/* Cart Section */}
-                <div className="relative flex items-center ml-4">
-                    <Link>
-                        <i className="fa-solid fa-cart-shopping fa-2x"></i>
+                <div className="relative flex items-center ml-2">
+                    <Link to="/cart" className="relative">
+                        {/* SVG Cart Icon */}
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="white"
+                            viewBox="0 0 24 24"
+                            strokeWidth="1.5"
+                            stroke="currentColor"
+                            className="w-10 h-10 hover:text-yellow-300 transition"
+                        >
+                            <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                d="M2.25 3h1.386c.51 0 .955.343 1.084.835l.383 1.438m0 0L6.75 13.5h10.5l1.647-6.177a1.125 1.125 0 00-1.084-1.448H5.103m0 0L4.5 5.25m13.5 12a1.125 1.125 0 11-2.25 0 1.125 1.125 0 012.25 0zm-9 0a1.125 1.125 0 11-2.25 0 1.125 1.125 0 012.25 0z"
+                            />
+                        </svg>
+
+                        {/* Cart item count badge */}
+                        <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+                            5
+                        </span>
                     </Link>
-                    <span className="absolute top-0 right-0 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
-                        5
-                    </span>
                 </div>
+
+
             </nav>
         </div>
     )

@@ -20,11 +20,11 @@ function App() {
 
 
       <Routes>
-        <Route path="sign-in" element={<><Navbar /> <SignIn /></>}></Route>
-        <Route path="create-account" element={<><Navbar /> <CreateAccount /></>}></Route>
-        <Route path="cart" element={<><Navbar /> <Cart cartItems={[]} /></>} />
-        <Route path="orders" element={<><Navbar /> <Orders orders={[]} /></>} />
-        <Route path="" element={<><Navbar /> <Catagories /> <Carrousel /> <Grid /></>} />
+        <Route exact path="/sign-in" element={<><Navbar /> <SignIn /></>}></Route>
+        <Route exact path="/create-account" element={<><Navbar /> <CreateAccount /></>}></Route>
+        <Route exact path="/cart" element={<><Navbar /> <Cart cartItems={[]} /></>} />
+        <Route exact path="/orders" element={<><Navbar /> <Orders orders={[]} /></>} />
+        <Route exact path="/" element={<><Navbar /> <Catagories /> <Carrousel /> <Grid /></>} />
       </Routes>
 
       <Footer />
