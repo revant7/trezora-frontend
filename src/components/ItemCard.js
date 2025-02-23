@@ -6,9 +6,9 @@ export default function ItemCard({ name, image, product_type, price, addToCart }
             <img
                 src={image}
                 alt={name}
-                className="rounded-t-lg w-full h-48 object-cover"
-                height="150px"
-                width="150px"
+                className="rounded-t-lg w-full h-48 object-contain"
+                height="100px"
+                width="140px"
             />
             <div className="p-5">
                 <h3 className="text-lg font-semibold text-gray-800 mb-2 truncate">{product_type}</h3>
