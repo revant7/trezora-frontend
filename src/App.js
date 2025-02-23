@@ -8,8 +8,10 @@ import Footer from './components/Footer.js'
 import SignIn from './pages/SignIn.js';
 import CreateAccount from './pages/CreateAccount.js';
 import Orders from './components/Orders.js'
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 import CatagoryPage from './components/CatagoryPage.js';
+import ProtectedRoute from './components/ProtectedRoute.js';
+import NoteState from './context/notes/NoteState.js';
 
 
 
@@ -18,18 +20,24 @@ import CatagoryPage from './components/CatagoryPage.js';
 function App() {
   return (
     <>
+      <NoteState>
 
+        <Routes>
+          <Route exact path="/sign-in" element={<><Navbar /> <SignIn /></>}></Route>
+          <Route exact path="/create-account" element={<><Navbar /> <CreateAccount /></>}></Route>
+          <Route exact path="/cart" element={<><Navbar /> <Cart cartItems={[]} /></>} />
+          <Route exact path="/orders" element={
+            <ProtectedRoute>
+              <><Navbar /> <Orders orders={[]} /></>
+            </ProtectedRoute>
+          } />
+          <Route path="/catagory/:categoryName" element={<><Navbar /> <CatagoryPage /></>} />
+          <Route exact path="/" element={<><Navbar /> <Catagories /> <Carrousel /> <Grid /></>} />
+        </Routes>
 
-      <Routes>
-        <Route exact path="/sign-in" element={<><Navbar /> <SignIn /></>}></Route>
-        <Route exact path="/create-account" element={<><Navbar /> <CreateAccount /></>}></Route>
-        <Route exact path="/cart" element={<><Navbar /> <Cart cartItems={[]} /></>} />
-        <Route exact path="/orders" element={<><Navbar /> <Orders orders={[]} /></>} />
-        <Route path="/catagory/:categoryName" element={<><Navbar /> <CatagoryPage /></>} />
-        <Route exact path="/" element={<><Navbar /> <Catagories /> <Carrousel /> <Grid /></>} />
-      </Routes>
+        <Footer />
 
-      <Footer />
+      </NoteState>
     </>
 
 

@@ -36,6 +36,8 @@ export default function SignIn() {
             if (response.status === 200 || response.status === 201) {
                 setMessage("Form submitted successfully!");
                 setFormData({ email: "", password: "" }); // Clear form
+                localStorage.setItem("accessToken", response.data.access);
+                localStorage.setItem("refreshToken", response.data.refresh);
             } else {
                 setMessage("Failed to submit the form. Please try again.");
             }
