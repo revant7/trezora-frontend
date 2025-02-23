@@ -1,4 +1,5 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 
 export default function Catagory() {
 
@@ -10,12 +11,14 @@ export default function Catagory() {
                 catagories.map(
                     (item) => (
                         <div div className="">
-                            <div className=" hover:scale-110">
-                                <img src={`/images/${item.replace(" ", "_")}.ico`} alt={item} height="100px" width="100px" className="rounded-full border-4 border-s-black" />
-                            </div>
-                            <div className="text-container">
-                                <span className="title">{item}</span>
-                            </div>
+                            <Link to={`/catagory/${item.toLowerCase().replace(/ /g, "-")}`}>
+                                <div className=" hover:scale-110">
+                                    <img src={`/images/${item.replace(" ", "_")}.ico`} alt={item} height="100px" width="100px" className="rounded-full border-4 border-s-black" />
+                                </div>
+                                <div className="text-container">
+                                    <span className="title">{item}</span>
+                                </div>
+                            </Link>
                         </div>
                     )
                 )

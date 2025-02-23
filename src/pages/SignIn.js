@@ -25,13 +25,8 @@ export default function SignIn() {
         setMessage("");
 
 
-        const dataToSend = {
-            email: formData.email,
-            password: formData.password,
-        };
-
         try {
-            const response = await axios.post("http://127.0.0.1:8000/api/token/", dataToSend, {
+            const response = await axios.post("http://127.0.0.1:8000/api/token/", formData, {
                 headers: {
                     "Content-Type": "application/json",
                 },

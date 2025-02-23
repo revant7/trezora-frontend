@@ -9,6 +9,7 @@ import SignIn from './pages/SignIn.js';
 import CreateAccount from './pages/CreateAccount.js';
 import Orders from './components/Orders.js'
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import CatagoryPage from './components/CatagoryPage.js';
 
 
 
@@ -24,6 +25,7 @@ function App() {
         <Route exact path="/create-account" element={<><Navbar /> <CreateAccount /></>}></Route>
         <Route exact path="/cart" element={<><Navbar /> <Cart cartItems={[]} /></>} />
         <Route exact path="/orders" element={<><Navbar /> <Orders orders={[]} /></>} />
+        <Route path="/catagory/:categoryName" element={<><Navbar /> <CatagoryPage /></>} />
         <Route exact path="/" element={<><Navbar /> <Catagories /> <Carrousel /> <Grid /></>} />
       </Routes>
 
