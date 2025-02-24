@@ -1,9 +1,20 @@
-import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import React, { useContext, useEffect, useState } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import AuthenticationContext from '../context/notes/authenticationContext';
 
 export default function Navbar() {
-    const navComponents = ["Home", "Today's Deals", "Sign In", "Create Account", "Orders", "Wish List", "Contact Us"];
+    const { isAuthenticated, setIsAuthenticated } = useContext(AuthenticationContext);
+    const [navComponents, setNavComponents] = useState([]);
     const location = useLocation();
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        if (isAuthenticated) {
+            setNavComponents(["Home", "Today's Deals", "Orders", "Wish List", "Contact Us"]);
+        } else {
+            setNavComponents(["Home", "Today's Deals", "Sign In", "Create Account", "Orders", "Wish List", "Contact Us"]);
+        }
+    }, [isAuthenticated]);
 
     const getActiveLinkClass = (item) => {
         const path = item === "Home" ? "/" : `/${item.replace(" ", "-").toLowerCase()}`;
@@ -12,9 +23,18 @@ export default function Navbar() {
             : "text-white";
     };
 
+    const handleProfileClick = () => navigate('/profile');
+
+    const handleLogout = () => {
+        localStorage.removeItem('accessToken'); // Clear token
+        setIsAuthenticated(false);              // Update context state
+        navigate('/sign-in', { replace: true });  // Redirect to login
+    };
+
     return (
         <div className="mb-2 shadow-lg">
             <nav className="flex items-center justify-between bg-gradient-to-r from-blue-600 to-blue-400 px-6 py-2">
+
                 {/* Logo Section */}
                 <div className="flex items-center gap-1">
                     <span className="text-white font-extrabold text-2xl tracking-wide">Trez</span>
@@ -53,6 +73,24 @@ export default function Navbar() {
                     ))}
                 </div>
 
+                {/* Profile & Logout Buttons (Only when authenticated) */}
+                {isAuthenticated && (
+                    <div className="flex gap-2 ml-4">
+                        <button
+                            onClick={handleProfileClick}
+                            className="px-3 py-1 bg-green-500 text-white rounded-lg hover:bg-green-600 transition"
+                        >
+                            Profile
+                        </button>
+                        <button
+                            onClick={handleLogout}
+                            className="px-3 py-1 bg-red-500 text-white rounded-lg hover:bg-red-600 transition"
+                        >
+                            Logout
+                        </button>
+                    </div>
+                )}
+
                 {/* Cart Section */}
                 <div className="relative flex items-center ml-2">
                     <Link to="/cart" className="relative">
@@ -70,7 +108,6 @@ export default function Navbar() {
                                 d="M2.25 3h1.386c.51 0 .955.343 1.084.835l.383 1.438m0 0L6.75 13.5h10.5l1.647-6.177a1.125 1.125 0 00-1.084-1.448H5.103m0 0L4.5 5.25m13.5 12a1.125 1.125 0 11-2.25 0 1.125 1.125 0 012.25 0zm-9 0a1.125 1.125 0 11-2.25 0 1.125 1.125 0 012.25 0z"
                             />
                         </svg>
-
                         <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center shadow-md">
                             5
                         </span>

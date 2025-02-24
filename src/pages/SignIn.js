@@ -1,9 +1,11 @@
-import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
+import React, { useContext, useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 import axios from 'axios'
-import AuthenticationState from '../context/notes/AuthenticationState';
+import AuthenticationContext from '../context/notes/authenticationContext';
 
 export default function SignIn() {
+    const navigate = useNavigate();
+    const { setIsAuthenticated } = useContext(AuthenticationContext);
     const [formData, setFormData] = useState({
         email: "",
         password: ""
@@ -39,12 +41,15 @@ export default function SignIn() {
                 setFormData({ email: "", password: "" }); // Clear form
                 localStorage.setItem("accessToken", response.data.access);
                 localStorage.setItem("refreshToken", response.data.refresh);
-
+                setIsAuthenticated(true);
+                navigate('/', { replace: true });
             } else {
                 setMessage("Failed to submit the form. Please try again.");
+                setIsAuthenticated(false);
             }
         } catch (error) {
             setMessage(`Error: ${error.response?.data?.detail || error.message}`);
+            setIsAuthenticated(false);
         } finally {
             setLoading(false);
         }

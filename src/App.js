@@ -24,12 +24,21 @@ function App() {
         <Routes>
           <Route exact path="/sign-in" element={<><Navbar /> <SignIn /></>}></Route>
           <Route exact path="/create-account" element={<><Navbar /> <CreateAccount /></>}></Route>
-          <Route exact path="/cart" element={<><Navbar /> <Cart cartItems={[]} /></>} />
+          <Route exact path="/cart" element={
+            <ProtectedRoute>
+              <>
+                <Navbar />
+                <Cart cartItems={[]} />
+              </>
+            </ProtectedRoute>
+          } />
           <Route exact path="/orders" element={
             <ProtectedRoute>
               <><Navbar /> <Orders orders={[]} /></>
             </ProtectedRoute>
           } />
+
+          <Route exact path="/today's-deals" element={<><Navbar /></>} />
           <Route path="/catagory/:categoryName" element={<><Navbar /> <CatagoryPage /></>} />
           <Route exact path="/" element={<><Navbar /> <Catagories /> <Carrousel /> <Grid /></>} />
         </Routes>

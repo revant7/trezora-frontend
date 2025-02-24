@@ -1,4 +1,4 @@
-import NoteContext from "./authenticationContext";
+import AuthenticationContext from "./authenticationContext";
 import { useState } from "react";
 
 const AuthenticationState = (props) => {
@@ -7,9 +7,9 @@ const AuthenticationState = (props) => {
 
 
     return (
-        <NoteContext.Provider value={{ isAuthenticated, setIsAuthenticated }}>
+        <AuthenticationContext.Provider value={{ isAuthenticated, setIsAuthenticated }}>
             {props.children}
-        </NoteContext.Provider>
+        </AuthenticationContext.Provider>
     )
 }
 
