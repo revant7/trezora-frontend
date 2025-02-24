@@ -52,7 +52,7 @@ export default function Navbar() {
                 <div className="flex items-center bg-white rounded-full shadow-inner px-3 w-full max-w-sm">
                     <input
                         type="text"
-                        className="w-full px-3 py-1 text-sm focus:outline-none rounded-l-full"
+                        className="w-full px-3 py-1 text-xl focus:outline-none rounded-l-full"
                         placeholder="Search for products..."
                     />
                     <span className="p-2 cursor-pointer hover:bg-gray-200 rounded-full transition">
@@ -66,7 +66,7 @@ export default function Navbar() {
                         <Link
                             key={item}
                             to={item === "Home" ? "/" : `/${item.replace(" ", "-").toLowerCase()}`}
-                            className={`text-sm font-semibold whitespace-nowrap transition-all duration-200 ease-in-out hover:text-yellow-300 hover:scale-105 ${getActiveLinkClass(item)}`}
+                            className={`text-xl font-semibold whitespace-nowrap transition-all duration-200 ease-in-out hover:text-yellow-300 hover:scale-105 ${getActiveLinkClass(item)}`}
                         >
                             {item}
                         </Link>

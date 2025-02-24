@@ -12,6 +12,7 @@ import { Routes, Route } from 'react-router-dom'
 import CatagoryPage from './components/CatagoryPage.js'
 import ProtectedRoute from './components/ProtectedRoute.js'
 import AuthenticationState from './context/notes/AuthenticationState.js'
+import Profile from './pages/Profile.js'
 
 
 
