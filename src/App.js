@@ -12,7 +12,7 @@ import { Routes, Route } from 'react-router-dom'
 import CatagoryPage from './components/CatagoryPage.js'
 import ProtectedRoute from './components/ProtectedRoute.js'
 import AuthenticationState from './context/notes/AuthenticationState.js'
-import Profile from './pages/Profile.js'
+import Profile from './components/Profile.js'
 
 
 
@@ -35,10 +35,20 @@ function App() {
           } />
           <Route exact path="/orders" element={
             <ProtectedRoute>
-              <><Navbar /> <Orders orders={[]} /></>
+              <>
+                <Navbar />
+                <Orders orders={[]} />
+              </>
             </ProtectedRoute>
           } />
-
+          <Route exact path='/profile' element={
+            <ProtectedRoute>
+              <>
+                <Navbar />
+                <Profile />
+              </>
+            </ProtectedRoute>
+          }></Route>
           <Route exact path="/today's-deals" element={<><Navbar /></>} />
           <Route path="/catagory/:categoryName" element={<><Navbar /> <CatagoryPage /></>} />
           <Route exact path="/" element={<><Navbar /> <Catagories /> <Carrousel /> <Grid /></>} />

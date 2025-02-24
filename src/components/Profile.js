@@ -1,21 +1,22 @@
-import React,{useState} from "react";
-function app(){
-    const[name, setName]=useState("yash joshi");
-    const[email,setemail]=useState("yeshjoshi006@gmail.com");
-    const[sippingaddress,setshippingaddress]=useState("a-21 block 18 rajouri garden");
-    const [paymentMethod, setPaymentMethod] = useState('UPI');
-}
-const order=[
+import React, { useState } from "react";
+function Profile() {
+
+  const [name, setName] = useState("yash joshi");
+  const [email, setemail] = useState("yeshjoshi006@gmail.com");
+  const [sippingaddress, setshippingaddress] = useState("a-21 block 18 rajouri garden");
+  const [paymentMethod, setPaymentMethod] = useState('UPI');
+  const [isEditing, setIsEditing] = useState(false);
+  const orders = [
     { id: 1, date: '2025-01-01', status: 'Shipped', total: '$100.00' },
     { id: 2, date: '2025-02-15', status: 'Delivered', total: '$50.00' },
     { id: 3, date: '2025-02-20', status: 'Processing', total: '$75.00' }
   ];
   return (
     <div className="min-h-screen flex justify-center items-center">
-        <div className="bg-white p-6 rounded-lg shadow-lg w-96">
+      <div className="bg-white p-6 rounded-lg shadow-lg w-96">
         <div className="text-center mb-6">
           <img
-            src={avatar}
+            src={"/"}
             alt="Profile"
             className="rounded-full w-24 h-24 mx-auto mb-4"
           />
@@ -30,14 +31,14 @@ const order=[
               <input
                 type="text"
                 value={name}
-                onChange={(e) => setName(e.target.value)}
+                onChange={(e) => console.log(e.target.value)}
                 className="w-full p-2 mb-2 border border-gray-300 rounded-md"
                 placeholder="Name"
               />
               <input
                 type="email"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={console.log("email changed")}
                 className="w-full p-2 mb-2 border border-gray-300 rounded-md"
                 placeholder="Email"
               />
@@ -45,16 +46,16 @@ const order=[
           ) : (
             <>
               <p className="font-medium">Shipping Address</p>
-              <p className="text-gray-600 mb-2">{shippingAddress}</p>
+              <p className="text-gray-600 mb-2">{"shippingAddress"}</p>
               <p className="font-medium">Payment Method</p>
-              <p className="text-gray-600 mb-2">{paymentMethod}</p>
+              <p className="text-gray-600 mb-2">{"paymentMethod"}</p>
             </>
           )}
         </div>
 
         {/* Toggle Edit Button */}
         <button
-          onClick={handleEdit}
+          onClick={console.log("isEditing")}
           className="bg-blue-500 text-white p-2 rounded-md w-full mb-4"
         >
           {isEditing ? 'Save Changes' : 'Edit Profile'}
@@ -81,4 +82,6 @@ const order=[
       </div>
     </div>
   );
+}
+
 export default Profile;
