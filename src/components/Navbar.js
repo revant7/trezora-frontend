@@ -66,7 +66,7 @@ export default function Navbar() {
                         <Link
                             key={item}
                             to={item === "Home" ? "/" : `/${item.replace(" ", "-").toLowerCase()}`}
-                            className={`text-xl font-semibold whitespace-nowrap transition-all duration-200 ease-in-out hover:text-yellow-300 hover:scale-105 ${getActiveLinkClass(item)}`}
+                            className={`text-lg font-semibold whitespace-nowrap transition-all duration-200 ease-in-out hover:text-yellow-300 hover:scale-105 ${getActiveLinkClass(item)}`}
                         >
                             {item}
                         </Link>
