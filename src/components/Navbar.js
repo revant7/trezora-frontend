@@ -1,63 +1,68 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 
 export default function Navbar() {
     const navComponents = ["Home", "Today's Deals", "Sign In", "Create Account", "Orders", "Wish List", "Contact Us"];
+    const location = useLocation();
+
+    const getActiveLinkClass = (item) => {
+        const path = item === "Home" ? "/" : `/${item.replace(" ", "-").toLowerCase()}`;
+        return location.pathname === path
+            ? "text-yellow-400 underline underline-offset-4"
+            : "text-white";
+    };
+
     return (
-        <div className="mb-2 shadow-md">
-            <nav className="flex items-center justify-between bg-blue-500 px-6 py-3">
+        <div className="mb-2 shadow-lg">
+            <nav className="flex items-center justify-between bg-gradient-to-r from-blue-600 to-blue-400 px-6 py-2">
                 {/* Logo Section */}
                 <div className="flex items-center gap-1">
-                    <span className="text-white font-bold text-2xl">Trez</span>
-                    <img className="bg-transparent" src="/images/finalshoplogo.ico" alt="logo" width="50" height="50" />
-                    <span className="text-white font-bold text-2xl">ra</span>
+                    <span className="text-white font-extrabold text-2xl tracking-wide">Trez</span>
+                    <img className="bg-transparent" src="/images/finalshoplogo.ico" alt="logo" width="40" height="40" />
+                    <span className="text-white font-extrabold text-2xl tracking-wide">ra</span>
                 </div>
 
                 {/* User Location */}
-                <div className="hidden lg:flex flex-col text-white text-sm text-center px-4">
+                <div className="hidden lg:flex flex-col text-white text-xs text-center px-4">
                     <span className="font-semibold">Deliver to</span>
                     <span className="font-light">New Delhi, 110091</span>
                 </div>
 
                 {/* Search Bar */}
-                <div className="flex items-center bg-white rounded-lg shadow-inner px-2 w-full max-w-md">
+                <div className="flex items-center bg-white rounded-full shadow-inner px-3 w-full max-w-sm">
                     <input
                         type="text"
-                        className="w-full px-3 py-2 text-sm focus:outline-none rounded-l-lg"
-                        placeholder="Search..."
+                        className="w-full px-3 py-1 text-sm focus:outline-none rounded-l-full"
+                        placeholder="Search for products..."
                     />
-                    <span className="p-2 cursor-pointer hover:bg-gray-200 rounded-r-lg transition">
-                        <img src="/images/search.jpg" width="20" height="20" alt="search" />
+                    <span className="p-2 cursor-pointer hover:bg-gray-200 rounded-full transition">
+                        <img src="/images/search.jpg" width="18" height="18" alt="search" />
                     </span>
                 </div>
 
                 {/* Navigation Links */}
-                <div className="hidden md:flex gap-5 px-4">
+                <div className="hidden md:flex gap-4 px-4">
                     {navComponents.map((item) => (
-                        <div className="relative group" key={item}>
-                            <Link
-                                to={item === "Home" ? "/" : `/${item.replace(" ", "-").toLowerCase()}`}
-                                className="text-white text-lg font-semibold hover:text-red-500 transition duration-200 whitespace-nowrap"
-                            >
-                                {item}
-                            </Link>
-                            {/* Underline for the navigation link */}
-                            <div className="absolute bottom-0 top-3 left-0 w-full h-2 bg-red-500 hidden group-hover:block mt-[20px]"></div>
-                        </div>
+                        <Link
+                            key={item}
+                            to={item === "Home" ? "/" : `/${item.replace(" ", "-").toLowerCase()}`}
+                            className={`text-sm font-semibold whitespace-nowrap transition-all duration-200 ease-in-out hover:text-yellow-300 hover:scale-105 ${getActiveLinkClass(item)}`}
+                        >
+                            {item}
+                        </Link>
                     ))}
                 </div>
 
                 {/* Cart Section */}
                 <div className="relative flex items-center ml-2">
                     <Link to="/cart" className="relative">
-                        {/* SVG Cart Icon */}
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
                             fill="white"
                             viewBox="0 0 24 24"
                             strokeWidth="1.5"
                             stroke="currentColor"
-                            className="w-10 h-10 hover:text-red-500 transition"
+                            className="w-9 h-9 hover:text-yellow-300 transition-transform transform hover:scale-110"
                         >
                             <path
                                 strokeLinecap="round"
@@ -66,8 +71,7 @@ export default function Navbar() {
                             />
                         </svg>
 
-                        {/* Cart item count badge */}
-                        <span className="absolute -top-2 -right-2 bg-yellow-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+                        <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center shadow-md">
                             5
                         </span>
                     </Link>

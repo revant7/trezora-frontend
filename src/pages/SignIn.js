@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import axios from 'axios'
+import AuthenticationState from '../context/notes/AuthenticationState';
 
 export default function SignIn() {
     const [formData, setFormData] = useState({
@@ -38,6 +39,7 @@ export default function SignIn() {
                 setFormData({ email: "", password: "" }); // Clear form
                 localStorage.setItem("accessToken", response.data.access);
                 localStorage.setItem("refreshToken", response.data.refresh);
+
             } else {
                 setMessage("Failed to submit the form. Please try again.");
             }

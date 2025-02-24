@@ -1,18 +1,17 @@
-import './css/App.css';
-import Navbar from './components/Navbar.js';
+import './css/App.css'
+import Navbar from './components/Navbar.js'
 import Carrousel from './components/Carrousel.js'
 import Catagories from './components/Catagory.js'
 import Grid from './components/ItemsHome.js'
-import Cart from './components/Cart.js';
+import Cart from './components/Cart.js'
 import Footer from './components/Footer.js'
-import SignIn from './pages/SignIn.js';
-import CreateAccount from './pages/CreateAccount.js';
+import SignIn from './pages/SignIn.js'
+import CreateAccount from './pages/CreateAccount.js'
 import Orders from './components/Orders.js'
-import { Routes, Route } from 'react-router-dom';
-import CatagoryPage from './components/CatagoryPage.js';
-import ProtectedRoute from './components/ProtectedRoute.js';
-import NoteState from './context/notes/NoteState.js';
-
+import { Routes, Route } from 'react-router-dom'
+import CatagoryPage from './components/CatagoryPage.js'
+import ProtectedRoute from './components/ProtectedRoute.js'
+import AuthenticationState from './context/notes/AuthenticationState.js'
 
 
 
@@ -20,7 +19,7 @@ import NoteState from './context/notes/NoteState.js';
 function App() {
   return (
     <>
-      <NoteState>
+      <AuthenticationState>
 
         <Routes>
           <Route exact path="/sign-in" element={<><Navbar /> <SignIn /></>}></Route>
@@ -37,7 +36,7 @@ function App() {
 
         <Footer />
 
-      </NoteState>
+      </AuthenticationState>
     </>
 
 
