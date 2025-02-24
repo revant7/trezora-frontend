@@ -1,7 +1,5 @@
-import React from 'react'
+import React from 'react';
 import { Link } from 'react-router-dom';
-
-
 
 export default function Navbar() {
     const navComponents = ["Home", "Today's Deals", "Sign In", "Create Account", "Orders", "Wish List", "Contact Us"];
@@ -36,13 +34,16 @@ export default function Navbar() {
                 {/* Navigation Links */}
                 <div className="hidden md:flex gap-5 px-4">
                     {navComponents.map((item) => (
-                        <Link
-                            key={item}
-                            to={item === "Home" ? "/" : `/${item.replace(" ", "-").toLowerCase()}`}
-                            className="text-white text-sm font-semibold hover:text-yellow-300 transition duration-200 whitespace-nowrap"
-                        >
-                            {item}
-                        </Link>
+                        <div className="relative group" key={item}>
+                            <Link
+                                to={item === "Home" ? "/" : `/${item.replace(" ", "-").toLowerCase()}`}
+                                className="text-white text-lg font-semibold hover:text-red-500 transition duration-200 whitespace-nowrap"
+                            >
+                                {item}
+                            </Link>
+                            {/* Underline for the navigation link */}
+                            <div className="absolute bottom-0 top-3 left-0 w-full h-2 bg-red-500 hidden group-hover:block mt-[20px]"></div>
+                        </div>
                     ))}
                 </div>
 
@@ -56,7 +57,7 @@ export default function Navbar() {
                             viewBox="0 0 24 24"
                             strokeWidth="1.5"
                             stroke="currentColor"
-                            className="w-10 h-10 hover:text-yellow-300 transition"
+                            className="w-10 h-10 hover:text-red-500 transition"
                         >
                             <path
                                 strokeLinecap="round"
@@ -66,14 +67,12 @@ export default function Navbar() {
                         </svg>
 
                         {/* Cart item count badge */}
-                        <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+                        <span className="absolute -top-2 -right-2 bg-yellow-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
                             5
                         </span>
                     </Link>
                 </div>
-
-
             </nav>
         </div>
-    )
+    );
 }
