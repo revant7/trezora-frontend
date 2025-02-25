@@ -30,7 +30,7 @@ function App() {
             <ProtectedRoute>
               <>
                 <Navbar />
-                <Cart cartItems={[]} />
+                <Cart />
               </>
             </ProtectedRoute>
           } />

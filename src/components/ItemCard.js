@@ -1,8 +1,23 @@
 import React from 'react'
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 export default function ItemCard({ asin, name, image, product_type, price }) {
-    const addToCart = (asin) => {
-        console.log(`Adding To Cart ${asin}`);
+    const navigate = useNavigate();
+    const addToCart = async (asin) => {
+        const user = localStorage.getItem('accessToken');
+        if (!user) {
+            navigate('/sign-in', { replace: true })
+        } else {
+            const data = {
+                asin: asin,
+                quantity: 1,
+            }
+            const response = await axios.post("http://127.0.0.1:8000/api/add-item-to-cart/", data, { headers: { Authorization: `Bearer ${user}` } })
+            console.log(response.data);
+
+        }
+
     };
     return (
         <div className="max-w-xs bg-white rounded-lg shadow-lg hover:shadow-2xl transition-shadow duration-300 flex flex-col">
