@@ -35,9 +35,7 @@ export default function ItemsHome() {
         window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
-    const addToCart = () => {
-        console.log("Adding To Cart");
-    };
+
 
     return (
         <>
@@ -45,7 +43,7 @@ export default function ItemsHome() {
                 {
                     products.map((item) => (
 
-                        <ItemCard key={item.asin} image={item.image} product_type={item.product_type} name={item.name} price={item.price} addToCart={addToCart} />
+                        <ItemCard key={item.asin} asin={item.asin} image={item.image} product_type={item.product_type} name={item.name} price={item.price} />
 
                     ))
 

@@ -11,9 +11,9 @@ import Orders from './components/Orders.js'
 import { Routes, Route } from 'react-router-dom'
 import CatagoryPage from './components/CatagoryPage.js'
 import ProtectedRoute from './components/ProtectedRoute.js'
-import AuthenticationState from './context/notes/AuthenticationState.js'
 import Profile from './components/Profile.js'
 import TodaysDeals from './components/TodaysDeals.js'
+import { AuthenticationProvider } from './context/AuthenticationContext.js'
 
 
 
@@ -21,7 +21,7 @@ import TodaysDeals from './components/TodaysDeals.js'
 function App() {
   return (
     <>
-      <AuthenticationState>
+      <AuthenticationProvider>
 
         <Routes>
           <Route exact path="/sign-in" element={<><Navbar /> <SignIn /></>}></Route>
@@ -50,14 +50,14 @@ function App() {
               </>
             </ProtectedRoute>
           }></Route>
-          <Route exact path="/today's-deals" element={<><Navbar /><TodaysDeals/></>} />
+          <Route exact path="/today's-deals" element={<><Navbar /><TodaysDeals /></>} />
           <Route path="/catagory/:categoryName" element={<><Navbar /> <CatagoryPage /></>} />
           <Route exact path="/" element={<><Navbar /> <Catagories /> <Carrousel /> <Grid /></>} />
         </Routes>
 
         <Footer />
 
-      </AuthenticationState>
+      </AuthenticationProvider>
     </>
 
 

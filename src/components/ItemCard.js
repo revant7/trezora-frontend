@@ -1,6 +1,9 @@
 import React from 'react'
 
-export default function ItemCard({ name, image, product_type, price, addToCart }) {
+export default function ItemCard({ asin, name, image, product_type, price }) {
+    const addToCart = (asin) => {
+        console.log(`Adding To Cart ${asin}`);
+    };
     return (
         <div className="max-w-xs bg-white rounded-lg shadow-lg hover:shadow-2xl transition-shadow duration-300 flex flex-col">
             <img
@@ -31,7 +34,7 @@ export default function ItemCard({ name, image, product_type, price, addToCart }
                 {/* Button sticks to the bottom of the card */}
                 <button
                     className="w-full py-2 mt-auto px-4 bg-gradient-to-r from-blue-500 to-purple-500 text-white font-semibold rounded-lg hover:from-purple-500 hover:to-blue-500 transition-transform transform hover:scale-105 shadow-md"
-                    onClick={addToCart}
+                    onClick={() => addToCart(asin)}
                 >
                     Add to Cart
                 </button>

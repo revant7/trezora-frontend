@@ -48,7 +48,7 @@ export default function CreateAccount() {
             };
 
             try {
-                const response = await axios.post("http://127.0.0.1:8000/api/create-account/", dataToSend, {
+                const response = await axios.post("http://127.0.0.1:8000/api/create-customer-account/", dataToSend, {
                     headers: {
                         "Content-Type": "application/json",
                     },

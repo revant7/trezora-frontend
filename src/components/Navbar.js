@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import AuthenticationContext from '../context/notes/authenticationContext';
+import AuthenticationContext from '../context/AuthenticationContext';
 
 export default function Navbar() {
     const { isAuthenticated, setIsAuthenticated } = useContext(AuthenticationContext);

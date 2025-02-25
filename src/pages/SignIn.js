@@ -1,7 +1,7 @@
 import React, { useContext, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import axios from 'axios'
-import AuthenticationContext from '../context/notes/authenticationContext';
+import AuthenticationContext from '../context/AuthenticationContext';
 
 export default function SignIn() {
     const navigate = useNavigate();
