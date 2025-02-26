@@ -15,6 +15,7 @@ import Profile from './components/Profile.js'
 import TodaysDeals from './components/TodaysDeals.js'
 import ProductPage from './pages/ProductPage.js'
 import { AuthenticationProvider } from './context/AuthenticationContext.js'
+import SearchResults from './components/SearchResults.js'
 
 
 
@@ -54,6 +55,7 @@ function App() {
           <Route exact path="/today's-deals" element={<><Navbar /><TodaysDeals /></>} />
           <Route path="/catagory/:categoryName" element={<><Navbar /> <CatagoryPage /></>} />
           <Route path="/product/:asin" element={<><Navbar /> <ProductPage /></>} />
+          <Route path="/search" element={<><Navbar /> <SearchResults /></>} />
           <Route exact path="/" element={<><Navbar /> <Catagories /> <Carrousel /> <Grid /></>} />
         </Routes>
 

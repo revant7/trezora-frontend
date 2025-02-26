@@ -5,6 +5,7 @@ import AuthenticationContext from '../context/AuthenticationContext';
 export default function Navbar() {
     const { isAuthenticated, setIsAuthenticated } = useContext(AuthenticationContext);
     const [navComponents, setNavComponents] = useState([]);
+    const [query, setQuery] = useState("");
     const location = useLocation();
     const navigate = useNavigate();
 
@@ -31,6 +32,12 @@ export default function Navbar() {
         navigate('/sign-in', { replace: true });  // Redirect to login
     };
 
+    const handleSearch = async (e) => {
+        if (e.key === "Enter" && query.trim() !== "") {
+            navigate(`/search?q=${encodeURIComponent(query)}`);
+        }
+    }
+
     return (
         <div className="mb-2 shadow-lg">
             <nav className="flex items-center justify-between bg-gradient-to-r from-blue-600 to-blue-400 px-6 py-2">
@@ -54,6 +61,9 @@ export default function Navbar() {
                         type="text"
                         className="w-full px-3 py-1 text-xl focus:outline-none rounded-l-full"
                         placeholder="Search for products..."
+                        value={query}
+                        onChange={(e) => setQuery(e.target.value)}
+                        onKeyDown={handleSearch}
                     />
                     <span className="p-2 cursor-pointer hover:bg-gray-200 rounded-full transition">
                         <img src="/images/search.jpg" width="18" height="18" alt="search" />
