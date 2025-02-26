@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
 const TodaysDeals = () => {
   const deals = [
@@ -25,6 +25,34 @@ const TodaysDeals = () => {
     },
   ];
 
+  // Set the offer end date
+  const offerEndDate = new Date("Mar 1, 2025 00:00:00").getTime();
+
+  // State to store time left
+  const [timeLeft, setTimeLeft] = useState(offerEndDate - Date.now());
+
+  useEffect(() => {
+    // Update the countdown every second
+    const countdownInterval = setInterval(() => {
+      const timeRemaining = offerEndDate - Date.now();
+      setTimeLeft(timeRemaining);
+
+      // If the countdown ends, clear the interval
+      if (timeRemaining <= 0) {
+        clearInterval(countdownInterval);
+      }
+    }, 1000);
+
+    // Cleanup interval when the component unmounts
+    return () => clearInterval(countdownInterval);
+  }, [offerEndDate]);
+
+  // Convert time left to days, hours, minutes, seconds
+  const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
+  const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+  const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+
   return (
     <div className="py-10 bg-gray-100">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -47,6 +75,15 @@ const TodaysDeals = () => {
                 <div className="flex justify-between items-center mt-4">
                   <span className="text-gray-600 line-through">{deal.price}</span>
                   <span className="text-xl font-bold text-green-500">{deal.discountedPrice}</span>
+                </div>
+                <div className="text-center px-[10px]  max-w-lg mx-auto text-red-600  ">
+                  <p className="py-3 text-black">Offer Ends in:</p>
+                  <div className="font-bold  bg-gray-300 rounded-md">
+                    <span className="inline-block mx-1 text-blue-500">{days}</span> Days
+                    <span className="inline-block mx-1  text-blue-500">{hours}</span> Hours
+                    <span className="inline-block mx-1  text-blue-500">{minutes}</span> Minutes
+                    <span className="inline-block mx-1  text-blue-500">{seconds}</span> Seconds
+                  </div>
                 </div>
                 <a
                   href={deal.link}
