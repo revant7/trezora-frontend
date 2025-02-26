@@ -1,9 +1,11 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import UpdateCartCountContext from "../context/UpdateCartCount";
 
 export default function ItemCard({ asin, name, image, product_type, price }) {
     const navigate = useNavigate();
+    const { setCartCount } = useContext(UpdateCartCountContext);
     const addToCart = async (asin) => {
         const user = localStorage.getItem('accessToken');
         if (!user) {
@@ -14,7 +16,12 @@ export default function ItemCard({ asin, name, image, product_type, price }) {
                 quantity: 1,
             }
             const response = await axios.post("http://127.0.0.1:8000/api/add-item-to-cart/", data, { headers: { Authorization: `Bearer ${user}` } })
-            console.log(response.data);
+            const response1 = await axios.get("http://127.0.0.1:8000/api/get-cart-items/", {
+                headers: {
+                    Authorization: `Bearer ${user}`
+                }
+            });
+            setCartCount(response1.data.length);
 
         }
 

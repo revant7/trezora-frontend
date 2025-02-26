@@ -1,10 +1,13 @@
-import React, { use, useCallback, useEffect, useState } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import UpdateCartCountContext from "../context/UpdateCartCount";
+
 
 const Cart = () => {
     const navigate = useNavigate();
     const [apiData, setApiData] = useState([]);
+    const { setCartCount } = useContext(UpdateCartCountContext);
 
     const fetchData = useCallback(async () => {
         const user = localStorage.getItem('accessToken');
@@ -18,6 +21,7 @@ const Cart = () => {
                 }
             });
             setApiData(response.data);
+            setCartCount(response.data.length);
         }
     }, [navigate]);
 

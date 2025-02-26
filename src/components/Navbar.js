@@ -1,9 +1,12 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import AuthenticationContext from '../context/AuthenticationContext';
+import UpdateCartCountContext from '../context/UpdateCartCount';
+import axios from 'axios';
 
 export default function Navbar() {
     const { isAuthenticated, setIsAuthenticated } = useContext(AuthenticationContext);
+    const { cartCount, setCartCount } = useContext(UpdateCartCountContext);
     const [navComponents, setNavComponents] = useState([]);
     const [query, setQuery] = useState("");
     const location = useLocation();
@@ -16,6 +19,37 @@ export default function Navbar() {
             setNavComponents(["Home", "Today's Deals", "Sign In", "Create Account", "Orders", "Wish List", "Contact Us"]);
         }
     }, [isAuthenticated]);
+
+    const fetchCartCount = useCallback(async () => {
+        const user = localStorage.getItem('accessToken');
+        if (!user) {
+            setCartCount(0);
+            return false;
+
+        } else {
+            try {
+                const response = await axios.get("http://127.0.0.1:8000/api/get-cart-items-count", { headers: { Authorization: `Bearer ${user}` } });
+                setCartCount(response.data.count);
+                return true;
+            } catch (error) {
+                console.error("Error fetching cart count:", error);
+                return false;
+            }
+
+        }
+    }, [setCartCount]);
+
+
+    useEffect(() => {
+        const fetchData = async () => {
+            const result = await fetchCartCount();
+            if (!result) {
+                navigate('/sign-in', { replace: true });
+            }
+        };
+        fetchData();
+
+    }, [fetchCartCount, navigate])
 
     const getActiveLinkClass = (item) => {
         const path = item === "Home" ? "/" : `/${item.replace(" ", "-").toLowerCase()}`;
@@ -119,7 +153,7 @@ export default function Navbar() {
                             />
                         </svg>
                         <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center shadow-md">
-                            5
+                            {cartCount}
                         </span>
                     </Link>
                 </div>
