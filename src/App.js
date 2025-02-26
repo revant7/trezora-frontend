@@ -13,6 +13,7 @@ import CatagoryPage from './components/CatagoryPage.js'
 import ProtectedRoute from './components/ProtectedRoute.js'
 import Profile from './components/Profile.js'
 import TodaysDeals from './components/TodaysDeals.js'
+import ProductPage from './pages/ProductPage.js'
 import { AuthenticationProvider } from './context/AuthenticationContext.js'
 
 
@@ -52,6 +53,7 @@ function App() {
           }></Route>
           <Route exact path="/today's-deals" element={<><Navbar /><TodaysDeals /></>} />
           <Route path="/catagory/:categoryName" element={<><Navbar /> <CatagoryPage /></>} />
+          <Route path="/product/:asin" element={<><Navbar /> <ProductPage /></>} />
           <Route exact path="/" element={<><Navbar /> <Catagories /> <Carrousel /> <Grid /></>} />
         </Routes>
 
