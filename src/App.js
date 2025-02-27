@@ -17,6 +17,8 @@ import ProductPage from './pages/ProductPage.js'
 import { AuthenticationProvider } from './context/AuthenticationContext.js'
 import SearchResults from './components/SearchResults.js'
 import { UpdateCartCountProvider } from './context/UpdateCartCount.js'
+import Wishlist from './components/Wishlist.js'
+import ContactUs from './components/ContactUs.js'
 
 
 
@@ -26,42 +28,55 @@ function App() {
     <>
       <AuthenticationProvider>
         <UpdateCartCountProvider>
+          <div className="flex flex-col min-h-screen">
+            <div className="flex-grow">
+              <Routes>
+                <Route exact path="/sign-in" element={<><Navbar /> <SignIn /></>}></Route>
+                <Route exact path="/create-account" element={<><Navbar /> <CreateAccount /></>}></Route>
+                <Route exact path="/contact-us" element={<><Navbar /> <ContactUs /></>}></Route>
+                <Route exact path="/cart" element={
+                  <ProtectedRoute>
+                    <>
+                      <Navbar />
+                      <Cart />
+                    </>
+                  </ProtectedRoute>
+                } />
+                <Route exact path="/orders" element={
+                  <ProtectedRoute>
+                    <>
+                      <Navbar />
+                      <Orders orders={[]} />
+                    </>
+                  </ProtectedRoute>
+                } />
 
-          <Routes>
-            <Route exact path="/sign-in" element={<><Navbar /> <SignIn /></>}></Route>
-            <Route exact path="/create-account" element={<><Navbar /> <CreateAccount /></>}></Route>
-            <Route exact path="/cart" element={
-              <ProtectedRoute>
-                <>
-                  <Navbar />
-                  <Cart />
-                </>
-              </ProtectedRoute>
-            } />
-            <Route exact path="/orders" element={
-              <ProtectedRoute>
-                <>
-                  <Navbar />
-                  <Orders orders={[]} />
-                </>
-              </ProtectedRoute>
-            } />
-            <Route exact path='/profile' element={
-              <ProtectedRoute>
-                <>
-                  <Navbar />
-                  <Profile />
-                </>
-              </ProtectedRoute>
-            }></Route>
-            <Route exact path="/today's-deals" element={<><Navbar /><TodaysDeals /></>} />
-            <Route path="/catagory/:categoryName" element={<><Navbar /> <CatagoryPage /></>} />
-            <Route path="/product/:asin" element={<><Navbar /> <ProductPage /></>} />
-            <Route path="/search" element={<><Navbar /> <SearchResults /></>} />
-            <Route exact path="/" element={<><Navbar /> <Catagories /> <Carrousel /> <Grid /></>} />
-          </Routes>
+                <Route exact path="/wish-list" element={
+                  <ProtectedRoute>
+                    <>
+                      <Navbar />
+                      <Wishlist />
+                    </>
+                  </ProtectedRoute>
+                } />
 
-          <Footer />
+                <Route exact path='/profile' element={
+                  <ProtectedRoute>
+                    <>
+                      <Navbar />
+                      <Profile />
+                    </>
+                  </ProtectedRoute>
+                }></Route>
+                <Route exact path="/today's-deals" element={<><Navbar /><TodaysDeals /></>} />
+                <Route path="/catagory/:categoryName" element={<><Navbar /> <CatagoryPage /></>} />
+                <Route path="/product/:asin" element={<><Navbar /> <ProductPage /></>} />
+                <Route path="/search" element={<><Navbar /> <SearchResults /></>} />
+                <Route exact path="/" element={<><Navbar /> <Catagories /> <Carrousel /> <Grid /></>} />
+              </Routes>
+            </div>
+            <Footer />
+          </div>
         </UpdateCartCountProvider>
       </AuthenticationProvider>
     </>

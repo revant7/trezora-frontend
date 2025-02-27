@@ -9,6 +9,9 @@ export default function Navbar() {
     const { cartCount, setCartCount } = useContext(UpdateCartCountContext);
     const [navComponents, setNavComponents] = useState([]);
     const [query, setQuery] = useState("");
+    const [pincode, setPincode] = useState("Fetching...");
+    const [village, setVillage] = useState("");
+    const [district, setDistrict] = useState("");
     const location = useLocation();
     const navigate = useNavigate();
 
@@ -16,9 +19,49 @@ export default function Navbar() {
         if (isAuthenticated) {
             setNavComponents(["Home", "Today's Deals", "Orders", "Wish List", "Contact Us"]);
         } else {
-            setNavComponents(["Home", "Today's Deals", "Sign In", "Create Account", "Orders", "Wish List", "Contact Us"]);
+            setNavComponents(["Home", "Today's Deals", "Sign In", "Orders", "Wish List", "Contact Us"]);
         }
     }, [isAuthenticated]);
+
+
+    useEffect(() => {
+        if ("geolocation" in navigator) {
+            navigator.geolocation.getCurrentPosition(
+                async (position) => {
+                    const { latitude, longitude } = position.coords;
+                    try {
+                        const response = await axios.get(
+                            `https://us1.locationiq.com/v1/reverse?key=pk.731d3ce8607b57b9811f86ee56c2bc1c&lat=${latitude}&lon=${longitude}&format=json`
+                        );
+                        const address = response.data.address;
+                        if (address) {
+                            if (address.postcode) {
+                                setPincode(address.postcode);
+                            }
+                            if (address.village) {
+                                setVillage(`${address.village}, `);
+                            }
+                            if (address.state_district) {
+                                setDistrict(`${address.state_district}, `);
+                            }
+                        } else {
+                            setPincode("Not Found");
+                        }
+                    } catch (error) {
+                        console.error("Error fetching pincode:", error);
+                        setPincode("Error");
+                    }
+
+                },
+                (error) => {
+                    console.error("Geolocation error:", error);
+                    setPincode("Location Disabled");
+                }
+            );
+        } else {
+            setPincode("Not Supported");
+        }
+    }, [])
 
     const fetchCartCount = useCallback(async () => {
         const user = localStorage.getItem('accessToken');
@@ -40,11 +83,13 @@ export default function Navbar() {
     }, [setCartCount]);
 
 
+
     useEffect(() => {
         const fetchData = async () => {
             const result = await fetchCartCount();
             if (!result) {
-                navigate('/sign-in', { replace: true });
+                // navigate('/sign-in', { replace: true });
+                return;
             }
         };
         fetchData();
@@ -85,8 +130,8 @@ export default function Navbar() {
 
                 {/* User Location */}
                 <div className="hidden lg:flex flex-col text-white text-xs text-center px-4">
-                    <span className="font-semibold">Deliver to</span>
-                    <span className="font-light">New Delhi, 110091</span>
+                    <span className="font-semibold">Deliver To:</span>
+                    <span className="font-medium">{`${village}${district}${pincode}`}</span>
                 </div>
 
                 {/* Search Bar */}
@@ -94,7 +139,7 @@ export default function Navbar() {
                     <input
                         type="text"
                         className="w-full px-3 py-1 text-xl focus:outline-none rounded-l-full"
-                        placeholder="Search for products..."
+                        placeholder="Search Trezora"
                         value={query}
                         onChange={(e) => setQuery(e.target.value)}
                         onKeyDown={handleSearch}
@@ -110,7 +155,7 @@ export default function Navbar() {
                         <Link
                             key={item}
                             to={item === "Home" ? "/" : `/${item.replace(" ", "-").toLowerCase()}`}
-                            className={`text-lg font-semibold whitespace-nowrap transition-all duration-200 ease-in-out hover:text-yellow-300 hover:scale-105 ${getActiveLinkClass(item)}`}
+                            className={`text-lg font-bold whitespace-nowrap transition-all duration-200 ease-in-out hover:text-yellow-300 hover:scale-105 ${getActiveLinkClass(item)}`}
                         >
                             {item}
                         </Link>
