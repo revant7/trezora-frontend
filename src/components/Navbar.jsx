@@ -6,6 +6,7 @@ import axios from 'axios';
 import { MapPin, User, LogOut, Search } from 'lucide-react';
 
 export default function Navbar() {
+    const API_URL = process.env.REACT_APP_API_URL;
     const { isAuthenticated, setIsAuthenticated } = useContext(AuthenticationContext);
     const { cartCount, setCartCount } = useContext(UpdateCartCountContext);
     const [navComponents, setNavComponents] = useState([]);
@@ -71,7 +72,7 @@ export default function Navbar() {
 
         if (searchInputValue.length > 2) {
             try {
-                const searchSuggestionsResponse = await axios.get("http://127.0.0.1:8000/api/autocomplete", { params: { q: searchInputValue } });
+                const searchSuggestionsResponse = await axios.get(`${API_URL}/api/autocomplete`, { params: { q: searchInputValue } });
                 setSuggestions(searchSuggestionsResponse.data);
             } catch (error) {
                 console.error('Error fetching suggestions:', error);
@@ -92,7 +93,7 @@ export default function Navbar() {
 
         } else {
             try {
-                const response = await axios.get("http://127.0.0.1:8000/api/get-cart-items-count", { headers: { Authorization: `Bearer ${user}` } });
+                const response = await axios.get(`${API_URL}/api/get-cart-items-count`, { headers: { Authorization: `Bearer ${user}` } });
                 setCartCount(response.data.count);
                 return true;
             } catch (error) {

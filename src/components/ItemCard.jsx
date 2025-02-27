@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import UpdateCartCountContext from "../context/UpdateCartCount";
 
 export default function ItemCard({ asin, name, image, product_type, price }) {
+    const API_URL = process.env.REACT_APP_API_URL;
     const navigate = useNavigate();
     const { setCartCount } = useContext(UpdateCartCountContext);
     const addToCart = async (asin) => {
@@ -15,8 +16,8 @@ export default function ItemCard({ asin, name, image, product_type, price }) {
                 asin: asin,
                 quantity: 1,
             }
-            const response = await axios.post("http://127.0.0.1:8000/api/add-item-to-cart/", data, { headers: { Authorization: `Bearer ${user}` } })
-            const response1 = await axios.get("http://127.0.0.1:8000/api/get-cart-items/", {
+            const response = await axios.post(`${API_URL}/api/add-item-to-cart/`, data, { headers: { Authorization: `Bearer ${user}` } })
+            const response1 = await axios.get(`${API_URL}/api/get-cart-items/`, {
                 headers: {
                     Authorization: `Bearer ${user}`
                 }

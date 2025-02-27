@@ -5,6 +5,7 @@ import UpdateCartCountContext from "../context/UpdateCartCount";
 
 
 const Cart = () => {
+    const API_URL = process.env.REACT_APP_API_URL;
     const navigate = useNavigate();
     const [apiData, setApiData] = useState([]);
     const { setCartCount } = useContext(UpdateCartCountContext);
@@ -15,7 +16,7 @@ const Cart = () => {
             navigate('/sign-in', { replace: true })
 
         } else {
-            const response = await axios.get("http://127.0.0.1:8000/api/get-cart-items/", {
+            const response = await axios.get(`${API_URL}/api/get-cart-items/`, {
                 headers: {
                     Authorization: `Bearer ${user}`
                 }
@@ -32,7 +33,7 @@ const Cart = () => {
             navigate('/sign-in', { replace: true })
 
         } else {
-            const response = await axios.post("http://127.0.0.1:8000/api/remove-item-from-cart/", { asin: asin }, {
+            const response = await axios.post(`${API_URL}/api/remove-item-from-cart/`, { asin: asin }, {
                 headers: {
                     Authorization: `Bearer ${user}`
                 }

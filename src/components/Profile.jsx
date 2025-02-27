@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 
 export default function Profile() {
+  const API_URL = process.env.REACT_APP_API_URL;
   const [apiData, setApiData] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [editedFirstName, setEditedFirstName] = useState("");
@@ -17,7 +18,7 @@ export default function Profile() {
 
   const getProfileDetails = async () => {
     try {
-      const response = await axios.get("http://127.0.0.1:8000/api/get-profile-details/", {
+      const response = await axios.get(`${API_URL}/api/get-profile-details/`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
         },
@@ -46,7 +47,7 @@ export default function Profile() {
       formData.append("state", editedAddress.state);
       formData.append("pincode", editedAddress.pincode);
 
-      await axios.patch("http://127.0.0.1:8000/api/update-profile-details/", formData, {
+      await axios.patch(`${API_URL}/api/update-profile-details/`, formData, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
           "Content-Type": "multipart/form-data",

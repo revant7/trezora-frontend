@@ -6,6 +6,8 @@ import PageFooter from './PageFooter';
 import { Search } from 'lucide-react';
 
 export default function SearchResults() {
+\
+    const API_URL = process.env.REACT_APP_API_URL;
     const location = useLocation();
     const searchParams = new URLSearchParams(location.search);
     const query = searchParams.get('q');
@@ -19,7 +21,7 @@ export default function SearchResults() {
         const fetchSearchResults = async () => {
             setIsLoading(true);
             try {
-                const response = await axios.get(`http://127.0.0.1:8000/api/search-products/?q=${encodeURIComponent(query)}&page=${currentPage}`);
+                const response = await axios.get(`${API_URL}/api/search-products/?q=${encodeURIComponent(query)}&page=${currentPage}`);
                 setSearchResults(response.data.products);
                 setNumberOfPages(response.data.total_pages);
                 setIsLoading(false);

@@ -14,8 +14,9 @@ export default function ItemsHome() {
     //const headers = { "Authorization": `Bearer ${accessToken}` }
 
     const fetchProducts = useCallback(async () => {
+        const API_URL = process.env.REACT_APP_API_URL;
         try {
-            const response = await axios.get(`http://127.0.0.1:8000/api/get-products/?page=${currentPage}`);
+            const response = await axios.get(`${API_URL}/api/get-products/?page=${currentPage}`);
             setProducts(response.data.products)
             setNumberOfPages(response.data.total_pages);
 
