@@ -3,6 +3,7 @@ import { useLocation } from 'react-router-dom';
 import axios from 'axios';
 import ItemCard from './ItemCard';
 import PageFooter from './PageFooter';
+import { Search } from 'lucide-react';
 
 export default function SearchResults() {
     const location = useLocation();
@@ -49,6 +50,12 @@ export default function SearchResults() {
 
     return (
         <>
+            <div className="mt-4 p-4 bg-gray-100 rounded-lg shadow-md">
+                <h2 className="text-xl font-semibold text-gray-800">
+                    Search Results For: <span className="text-blue-600">{query}</span>
+                </h2>
+            </div>
+
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 p-4">
                 {searchResults.map((item) => (
                     <ItemCard key={item.asin} asin={item.asin} image={item.image} product_type={item.product_type} name={item.name} price={item.price} />

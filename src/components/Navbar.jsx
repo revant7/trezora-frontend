@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import AuthenticationContext from '../context/AuthenticationContext';
 import UpdateCartCountContext from '../context/UpdateCartCount';
 import axios from 'axios';
+import { MapPin, User, LogOut } from 'lucide-react';
 
 export default function Navbar() {
     const { isAuthenticated, setIsAuthenticated } = useContext(AuthenticationContext);
@@ -118,34 +119,60 @@ export default function Navbar() {
     }
 
     return (
+
         <div className="mb-2 shadow-lg">
-            <nav className="flex items-center justify-between bg-gradient-to-r from-blue-600 to-blue-400 px-6 py-2">
+            <nav className="flex items-center justify-between px-4 py-3 bg-gradient-to-r from-blue-700 to-blue-500 shadow-xl rounded-b-xl backdrop-blur-md bg-opacity-90">
 
                 {/* Logo Section */}
-                <div className="flex items-center gap-1">
-                    <span className="text-white font-extrabold text-2xl tracking-wide">Trez</span>
-                    <img className="bg-transparent" src="/images/finalshoplogo.ico" alt="logo" width="40" height="40" />
-                    <span className="text-white font-extrabold text-2xl tracking-wide">ra</span>
+                <div className="flex items-center gap-1 pr-3">
+                    <span className="text-white font-extrabold text-2xl tracking-wide drop-shadow-lg">Trez</span>
+                    <img className="bg-transparent drop-shadow-lg" src="/images/finalshoplogo.ico" alt="logo" width="42" height="42" />
+                    <span className="text-white font-extrabold text-2xl tracking-wide drop-shadow-lg">ra</span>
                 </div>
 
                 {/* User Location */}
-                <div className="hidden lg:flex flex-col text-white text-xs text-center px-4">
-                    <span className="font-semibold">Deliver To:</span>
-                    <span className="font-medium">{`${village}${district}${pincode}`}</span>
+                <div className="flex items-center space-x-1 relative pr-3">
+                    <MapPin className="w-5 h-5 text-yellow-400 animate-bounce" />
+                    <div className="hidden lg:flex flex-col text-white text-[10px] leading-tight text-left">
+                        <span className="font-semibold text-[11px]">Deliver To:</span>
+                        <div className="relative group">
+                            <p className="font-medium truncate max-w-[80px] cursor-pointer">
+                                {district}
+                            </p>
+                            <div className="absolute left-1/2 -translate-x-1/2 mt-1 bg-gray-900 text-white text-[9px] px-2 py-1 rounded-md opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-opacity shadow-lg pointer-events-none z-50">
+                                {district}
+                            </div>
+                        </div>
+                        <p className="font-medium">{pincode}</p>
+                    </div>
                 </div>
 
+
+
+                {/* <div className='flex'>
+                    <MapPin className="w-6 h-6 text-yellow-400 animate-bounce mb-1" />
+                    <div className="hidden lg:flex flex-col items-center text-white text-xs text-center px-2">
+                        <div className="flex flex-col items-center gap-0.5 mt-1">
+                            <span className="font-semibold text-[12px]">Deliver To:</span>
+                            <p className="font-medium text-[10px] leading-tight">{district}</p>
+                            <p className="font-medium text-[10px] leading-tight">{pincode}</p>
+                        </div>
+                    </div>
+                </div> */}
+
+
                 {/* Search Bar */}
-                <div className="flex items-center bg-white rounded-full shadow-inner px-3 w-full max-w-sm">
+                <div className="flex items-center bg-white/90 backdrop-blur-md rounded-full shadow-md px-2 w-3/4 max-w-md hover:shadow-lg transition">
                     <input
                         type="text"
-                        className="w-full px-3 py-1 text-xl focus:outline-none rounded-l-full"
+                        className="w-full px-4 py-2 text-lg focus:outline-none rounded-l-full text-gray-700"
                         placeholder="Search Trezora"
                         value={query}
                         onChange={(e) => setQuery(e.target.value)}
                         onKeyDown={handleSearch}
                     />
                     <span className="p-2 cursor-pointer hover:bg-gray-200 rounded-full transition">
-                        <img src="/images/search.jpg" width="18" height="18" alt="search" />
+                        <img src="/images/search.jpg" width="20" height="20" alt="search" />
                     </span>
                 </div>
 
@@ -155,7 +182,7 @@ export default function Navbar() {
                         <Link
                             key={item}
                             to={item === "Home" ? "/" : `/${item.replace(" ", "-").toLowerCase()}`}
-                            className={`text-lg font-bold whitespace-nowrap transition-all duration-200 ease-in-out hover:text-yellow-300 hover:scale-105 ${getActiveLinkClass(item)}`}
+                            className={`text-lg font-semibold whitespace-nowrap transition-all duration-300 ease-in-out text-white hover:text-yellow-300 hover:scale-110 transform ${getActiveLinkClass(item)}`}
                         >
                             {item}
                         </Link>
@@ -164,18 +191,18 @@ export default function Navbar() {
 
                 {/* Profile & Logout Buttons (Only when authenticated) */}
                 {isAuthenticated && (
-                    <div className="flex gap-2 ml-4">
+                    <div className="flex gap-2 ml-2">
                         <button
                             onClick={handleProfileClick}
-                            className="px-3 py-1 bg-green-500 text-white rounded-lg hover:bg-green-600 transition"
+                            className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-green-500 to-green-600 text-white font-semibold rounded-full shadow-md hover:scale-110 transition-all duration-300 ease-in-out hover:from-green-600 hover:to-green-700"
                         >
-                            Profile
+                            <User className="w-6 h-6" />
                         </button>
                         <button
                             onClick={handleLogout}
-                            className="px-3 py-1 bg-red-500 text-white rounded-lg hover:bg-red-600 transition"
+                            className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-red-500 to-red-600 text-white font-semibold rounded-full shadow-md hover:scale-110 transition-all duration-300 ease-in-out hover:from-red-600 hover:to-red-700"
                         >
-                            Logout
+                            <LogOut className="w-5 h-5" />
                         </button>
                     </div>
                 )}
@@ -204,5 +231,9 @@ export default function Navbar() {
                 </div>
             </nav>
         </div>
+
+
     );
 }
+
+
