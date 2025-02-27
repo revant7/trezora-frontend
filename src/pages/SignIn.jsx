@@ -4,6 +4,7 @@ import axios from 'axios'
 import AuthenticationContext from '../context/AuthenticationContext';
 
 export default function SignIn() {
+    const API_URL = process.env.REACT_APP_API_URL;
     const navigate = useNavigate();
     const { setIsAuthenticated } = useContext(AuthenticationContext);
     const [formData, setFormData] = useState({
@@ -29,7 +30,7 @@ export default function SignIn() {
 
 
         try {
-            const response = await axios.post("http://127.0.0.1:8000/api/token/", formData, {
+            const response = await axios.post(`${API_URL}/api/token/`, formData, {
                 headers: {
                     "Content-Type": "application/json",
                 },

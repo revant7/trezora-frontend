@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
 export default function CreateAccount() {
+    const API_URL = process.env.REACT_APP_API_URL;
     const [formData, setFormData] = useState({
         firstName: "",
         lastName: "",
@@ -48,7 +49,7 @@ export default function CreateAccount() {
             };
 
             try {
-                const response = await axios.post("http://127.0.0.1:8000/api/create-customer-account/", dataToSend, {
+                const response = await axios.post(`${API_URL}/api/create-customer-account/`, dataToSend, {
                     headers: {
                         "Content-Type": "application/json",
                     },
