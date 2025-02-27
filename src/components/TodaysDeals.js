@@ -77,7 +77,7 @@ const TodaysDeals = () => {
                   <span className="text-xl font-bold text-green-500">{deal.discountedPrice}</span>
                 </div>
                 <div className="text-center px-[10px]  max-w-lg mx-auto text-red-600  ">
-                  <p className="py-3 text-black">Offer Ends in:</p>
+                  <p className="py-3 text-black text-lg">Offer Ends in:</p>
                   <div className="font-bold  bg-gray-300 rounded-md">
                     <span className="inline-block mx-1 text-blue-500">{days}</span> Days
                     <span className="inline-block mx-1  text-blue-500">{hours}</span> Hours
