@@ -1,9 +1,9 @@
-import React, { useCallback, useContext, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState, useRef } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import AuthenticationContext from '../context/AuthenticationContext';
 import UpdateCartCountContext from '../context/UpdateCartCount';
 import axios from 'axios';
-import { MapPin, User, LogOut } from 'lucide-react';
+import { MapPin, User, LogOut, Search } from 'lucide-react';
 
 export default function Navbar() {
     const { isAuthenticated, setIsAuthenticated } = useContext(AuthenticationContext);
@@ -13,6 +13,7 @@ export default function Navbar() {
     const [pincode, setPincode] = useState("Fetching...");
     const [village, setVillage] = useState("");
     const [district, setDistrict] = useState("");
+    const [suggestions, setSuggestions] = useState([]);
     const location = useLocation();
     const navigate = useNavigate();
 
@@ -62,7 +63,26 @@ export default function Navbar() {
         } else {
             setPincode("Not Supported");
         }
-    }, [])
+    }, []);
+
+    const handleSearchInputChange = async (e) => {
+        const searchInputValue = e.target.value;
+        setQuery(searchInputValue);
+
+        if (searchInputValue.length > 2) {
+            try {
+                const searchSuggestionsResponse = await axios.get("http://127.0.0.1:8000/api/autocomplete", { params: { q: searchInputValue } });
+                setSuggestions(searchSuggestionsResponse.data);
+            } catch (error) {
+                console.error('Error fetching suggestions:', error);
+                setSuggestions([]);
+            }
+        } else {
+            setSuggestions([]);
+        }
+    };
+
+
 
     const fetchCartCount = useCallback(async () => {
         const user = localStorage.getItem('accessToken');
@@ -112,8 +132,9 @@ export default function Navbar() {
         navigate('/sign-in', { replace: true });  // Redirect to login
     };
 
+
     const handleSearch = async (e) => {
-        if (e.key === "Enter" && query.trim() !== "") {
+        if ((e.key === "Enter" || e.type === "click") && query.trim() !== "") {
             navigate(`/search?q=${encodeURIComponent(query)}`);
         }
     }
@@ -147,34 +168,42 @@ export default function Navbar() {
                     </div>
                 </div>
 
-
-
-                {/* <div className='flex'>
-                    <MapPin className="w-6 h-6 text-yellow-400 animate-bounce mb-1" />
-                    <div className="hidden lg:flex flex-col items-center text-white text-xs text-center px-2">
-                        <div className="flex flex-col items-center gap-0.5 mt-1">
-                            <span className="font-semibold text-[12px]">Deliver To:</span>
-                            <p className="font-medium text-[10px] leading-tight">{district}</p>
-                            <p className="font-medium text-[10px] leading-tight">{pincode}</p>
-                        </div>
-                    </div>
-                </div> */}
-
-
                 {/* Search Bar */}
-                <div className="flex items-center bg-white/90 backdrop-blur-md rounded-full shadow-md px-2 w-3/4 max-w-md hover:shadow-lg transition">
-                    <input
-                        type="text"
-                        className="w-full px-4 py-2 text-lg focus:outline-none rounded-l-full text-gray-700"
-                        placeholder="Search Trezora"
-                        value={query}
-                        onChange={(e) => setQuery(e.target.value)}
-                        onKeyDown={handleSearch}
-                    />
-                    <span className="p-2 cursor-pointer hover:bg-gray-200 rounded-full transition">
-                        <img src="/images/search.jpg" width="20" height="20" alt="search" />
-                    </span>
+                <div className="relative w-3/4 max-w-md">
+                    <div className="flex items-center bg-white/90 backdrop-blur-md rounded-full shadow-md px-2 hover:shadow-lg transition border border-gray-300">
+                        <input
+                            type="text"
+                            className="w-full px-4 py-2 text-lg focus:outline-none rounded-l-full text-gray-700 placeholder-gray-400 focus:ring-2 focus:ring-blue-400"
+                            placeholder="Search Trezora..."
+                            value={query}
+                            onChange={handleSearchInputChange}
+                            onKeyDown={handleSearch}
+                        />
+                        <button
+                            className="p-2 flex items-center justify-center bg-blue-500 text-white rounded-full shadow-md hover:bg-blue-600 focus:ring-2 focus:ring-blue-300 active:scale-90 transition-all"
+                            onClick={handleSearch}
+                            aria-label="Search"
+                        >
+                            <Search className="w-6 h-6" />
+                        </button>
+                    </div>
+
+                    {/* Search Suggestions Dropdown */}
+                    {suggestions.length > 0 && (
+                        <ul className="absolute left-0 w-full mt-2 bg-white rounded-lg shadow-lg border border-gray-200 z-50 overflow-hidden">
+                            {suggestions.map((suggestion, index) => (
+                                <li
+                                    key={index}
+                                    className="px-4 py-2 text-gray-700 hover:bg-gray-100 transition cursor-pointer"
+                                    onClick={() => setQuery(suggestion)}
+                                >
+                                    {suggestion}
+                                </li>
+                            ))}
+                        </ul>
+                    )}
                 </div>
+
 
                 {/* Navigation Links */}
                 <div className="hidden md:flex gap-4 px-4">
