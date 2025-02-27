@@ -6,7 +6,6 @@ import PageFooter from './PageFooter';
 import { Search } from 'lucide-react';
 
 export default function SearchResults() {
-\
     const API_URL = process.env.REACT_APP_API_URL;
     const location = useLocation();
     const searchParams = new URLSearchParams(location.search);
