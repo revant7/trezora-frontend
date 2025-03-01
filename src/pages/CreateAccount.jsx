@@ -43,8 +43,7 @@ export default function CreateAccount() {
                 last_name: formData.lastName,
                 mobile_number: formData.mobileNumber,
                 email: formData.email,
-                password1: formData.password,
-                password2: confirmPassword,
+                password: formData.password,
 
             };
 
