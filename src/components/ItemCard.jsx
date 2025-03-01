@@ -40,7 +40,7 @@ export default function ItemCard({ unique_id, name, brand, price, mrp, product_c
                 onClick={() => goToProductPage(unique_id)}
             />
             <div className="p-5 flex flex-col flex-grow">
-                <h3 className="text-lg font-semibold text-gray-800 mb-2 truncate">{product_type}</h3>
+                <h3 className="text-lg font-semibold text-gray-800 mb-2 truncate">{product_category}</h3>
 
                 {/* Name section with fixed height and overflow handling */}
                 <p className="text-gray-600 text-sm mb-3 h-12 overflow-hidden line-clamp-2 cursor-pointer" onClick={() => goToProductPage(unique_id)}>
