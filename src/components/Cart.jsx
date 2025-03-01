@@ -27,13 +27,13 @@ const Cart = () => {
     }, [navigate]);
 
 
-    const handleRemoveFromCart = useCallback(async (asin) => {
+    const handleRemoveFromCart = useCallback(async (unique_id) => {
         const user = localStorage.getItem('accessToken');
         if (!user) {
             navigate('/sign-in', { replace: true })
 
         } else {
-            const response = await axios.post(`${API_URL}/api/remove-item-from-cart/`, { asin: asin }, {
+            const response = await axios.post(`${API_URL}/api/remove-item-from-cart/`, { unique_id: unique_id }, {
                 headers: {
                     Authorization: `Bearer ${user}`
                 }
@@ -58,7 +58,7 @@ const Cart = () => {
                 <ul className="space-y-4">
                     {apiData.map((item) => (
                         <li
-                            key={item.prod_asin}
+                            key={item.prod_unique_id}
                             className="flex items-center justify-between bg-white p-4 rounded-lg shadow"
                         >
                             <div className="flex items-center space-x-4">
@@ -76,7 +76,7 @@ const Cart = () => {
                             <div className="flex items-center space-x-4">
                                 <span className="text-gray-700">Qty: {item.prod_quantity}</span>
                                 <button
-                                    onClick={() => handleRemoveFromCart(item.prod_asin)}
+                                    onClick={() => handleRemoveFromCart(item.prod_unique_id)}
                                     className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600"
                                 >
                                     Remove

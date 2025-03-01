@@ -59,7 +59,7 @@ export default function SearchResults() {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 p-4">
                 {searchResults.map((item) => (
-                    <ItemCard key={item.asin} asin={item.asin} image={item.image} product_type={item.product_type} name={item.name} price={item.price} />
+                    <ItemCard key={item.unique_id} unique_id={item.unique_id} image={item.image} product_category={item.product_category[0]} name={item.name} price={item.price} />
                 ))}
             </div>
             <PageFooter currentPage={currentPage} totalPages={numberOfPages} onPageChange={handlePageChange} />

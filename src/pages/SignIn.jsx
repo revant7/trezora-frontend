@@ -36,10 +36,13 @@ export default function SignIn() {
                 },
 
             });
+            console.log(response.data);
+            console.log(response.headers);
 
             if (response.status === 200 || response.status === 201) {
                 setMessage("Form submitted successfully!");
                 setFormData({ email: "", password: "" }); // Clear form
+                console.log(response.data)
                 localStorage.setItem("accessToken", response.data.access);
                 localStorage.setItem("refreshToken", response.data.refresh);
                 setIsAuthenticated(true);
@@ -47,10 +50,13 @@ export default function SignIn() {
             } else {
                 setMessage("Failed to submit the form. Please try again.");
                 setIsAuthenticated(false);
+                console.log(response.data);
+                console.log(response.headers);
             }
         } catch (error) {
             setMessage(`Error: ${error.response?.data?.detail || error.message}`);
             setIsAuthenticated(false);
+
         } finally {
             setLoading(false);
         }

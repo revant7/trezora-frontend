@@ -44,7 +44,7 @@ export default function ItemsHome() {
                 {
                     products.map((item) => (
 
-                        <ItemCard key={item.asin} asin={item.asin} image={item.image} product_type={item.product_type} name={item.name} price={item.price} />
+                        <ItemCard key={item.unique_id} unique_id={item.unique_id} name={item.name} brand={item.brand} price={item.price} mrp={item.mrp} product_category={item.product_category[0]} image={item.image[0]} product_rating={item.product_rating} />
 
                     ))
 
