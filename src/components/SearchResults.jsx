@@ -3,10 +3,10 @@ import { useLocation } from 'react-router-dom';
 import axios from 'axios';
 import ItemCard from './ItemCard';
 import PageFooter from './PageFooter';
-import { Search } from 'lucide-react';
+
 
 export default function SearchResults() {
-    const API_URL = process.env.REACT_APP_API_URL;
+
     const location = useLocation();
     const searchParams = new URLSearchParams(location.search);
     const query = searchParams.get('q');
@@ -20,7 +20,9 @@ export default function SearchResults() {
         const fetchSearchResults = async () => {
             setIsLoading(true);
             try {
+                const API_URL = process.env.REACT_APP_API_URL;
                 const response = await axios.get(`${API_URL}/api/search-products/?q=${encodeURIComponent(query)}&page=${currentPage}`);
+                console.log(response.data);
                 setSearchResults(response.data.products);
                 setNumberOfPages(response.data.total_pages);
                 setIsLoading(false);
