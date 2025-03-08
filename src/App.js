@@ -70,7 +70,7 @@ function App() {
                 }></Route>
                 <Route exact path="/today's-deals" element={<><Navbar /><TodaysDeals /></>} />
                 <Route path="/catagory/:categoryName" element={<><Navbar /> <CatagoryPage /></>} />
-                <Route path="/product/:asin" element={<><Navbar /> <ProductPage /></>} />
+                <Route path="/product/:productId" element={<><Navbar /> <ProductPage /></>} />
                 <Route path="/search" element={<><Navbar /> <SearchResults /></>} />
                 <Route exact path="/" element={<><Navbar /> <Catagories /> <Carrousel /> <Grid /></>} />
               </Routes>
