@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 
 export default function ProductPage() {
-  const GEMINI_API_KEY = "YOUR_GEMINI_API_KEY"; // 🔹 Replace with your actual API key
+  const GEMINI_API_KEY = "AIzaSyDSrmf6flQBlZTPxf48b6dT1ncZqoTfWoY"; // 🔹 Replace with your actual API key
   const [description, setDescription] = useState("Fetching description...");
 
   const fetchGeminiDescription = async (productName) => {
