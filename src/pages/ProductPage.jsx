@@ -5,7 +5,7 @@ import axios from "axios";
 const ProductDetails = () => {
   const { productId } = useParams();
   const [product, setProduct] = useState(null);
-  const [zoomPosition, setZoomPosition] = useState({ x: 50, y: 50 });
+  const [zoomStyle, setZoomStyle] = useState({ display: "none" });
 
   useEffect(() => {
     axios
@@ -22,35 +22,46 @@ const ProductDetails = () => {
     return <div className="flex items-center justify-center h-screen text-lg font-semibold">Loading...</div>;
   }
 
+  // Handle zoom effect
   const handleMouseMove = (e) => {
     const { left, top, width, height } = e.target.getBoundingClientRect();
     const x = ((e.clientX - left) / width) * 100;
     const y = ((e.clientY - top) / height) * 100;
-    setZoomPosition({ x, y });
+
+    setZoomStyle({
+      display: "block",
+      backgroundImage: `url(${product.image})`,
+      backgroundSize: "200%", // Adjust zoom level
+      backgroundPosition: `${x}% ${y}%`,
+    });
+  };
+
+  const handleMouseLeave = () => {
+    setZoomStyle({ display: "none" });
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 p-6">
       <div className="w-full max-w-6xl bg-white shadow-xl rounded-2xl p-8">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-
+          
           {/* Image Section */}
-          <div
-            className="relative w-full h-96 overflow-hidden rounded-lg border shadow-lg bg-gray-200 group"
-            onMouseMove={handleMouseMove}
-          >
-            <div
-              className="absolute inset-0 bg-cover bg-center transition-transform duration-300 ease-in-out group-hover:scale-105"
-              style={{
-                backgroundImage: `url(${product.image})`,
-                backgroundPosition: `${zoomPosition.x}% ${zoomPosition.y}%`,
-              }}
-            ></div>
+          <div className="relative w-full h-96 overflow-hidden rounded-lg border shadow-lg bg-gray-200">
             <img
               src={product.image}
               alt={product.name}
-              className="w-full h-full object-cover opacity-0"
+              className="w-full h-full object-cover cursor-crosshair"
+              onMouseMove={handleMouseMove}
+              onMouseLeave={handleMouseLeave}
             />
+          </div>
+
+          {/* Zoomed-In Image Box */}
+          <div className="w-80 h-80 border-2 border-gray-300 overflow-hidden rounded-lg shadow-lg">
+            <div 
+              className="w-full h-full bg-no-repeat transition-all duration-300 block:none"
+              style={{ ...zoomStyle }}
+            ></div>
           </div>
 
           {/* Product Details */}
@@ -95,3 +106,4 @@ const ProductDetails = () => {
 };
 
 export default ProductDetails;
+
