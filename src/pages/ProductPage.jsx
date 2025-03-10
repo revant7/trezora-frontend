@@ -31,7 +31,7 @@ const ProductDetails = () => {
     setZoomStyle({
       display: "block",
       backgroundImage: `url(${product.image})`,
-      backgroundSize: "200%", // Adjust zoom level
+      backgroundSize: "180%", // Adjust zoom level
       backgroundPosition: `${x}% ${y}%`,
     });
   };
@@ -45,7 +45,7 @@ const ProductDetails = () => {
       <div className="w-full h-full bg-white shadow-xl p-10 flex flex-col md:flex-row gap-10">
 
         {/* Left Section: Image & Zoom Box */}
-        <div className="w-full md:w-1/2 flex flex-col items-center">
+        <div className="w-full md:w-1/2 flex flex-col items-center ">
           {/* Main Product Image */}
           <div className="relative w-full h-[500px] overflow-hidden rounded-lg border shadow-lg bg-gray-200">
             <img 
@@ -56,18 +56,17 @@ const ProductDetails = () => {
               onMouseLeave={handleMouseLeave}
             />
           </div>
-
-          {/* Zoomed-In Image Box */}
-          <div className="w-80 h-80 mt-6 border-2 border-gray-300 overflow-hidden rounded-lg shadow-lg bg-white">
-            <div 
-              className="w-full h-full bg-no-repeat transition-all duration-300"
-              style={{ ...zoomStyle }}
-            ></div>
-          </div>
         </div>
 
         {/* Right Section: Product Details */}
-        <div className="w-full md:w-1/2 flex flex-col justify-center text-center md:text-left">
+        <div className="w-full md:w-1/2 flex flex-col justify-center text-center md:text-left relative">
+          
+          {/* Zoom Box (Positioned Over Description) */}
+          <div 
+            className="absolute left-0 top-0 bottom-1 w-[450px] h-[450px] border-2 border-gray-300 overflow-hidden rounded-lg shadow-lg bg-white z-10"
+            style={{ ...zoomStyle }}
+          ></div>
+
           <h2 className="text-5xl font-bold text-gray-900">{product.name}</h2>
           <p className="text-gray-600 mt-2 text-2xl">Brand: {product.brand}</p>
 
@@ -83,39 +82,37 @@ const ProductDetails = () => {
           </p>
 
           {/* Description */}
-          <p className="text-gray-700 mt-4 text-2xl leading-relaxed">{product.description}</p>
+          <p className="text-gray-700 mt-10 text-2xl leading-relaxed relative z-0">{product.description}</p>
 
           {/* Stock Information */}
           <p className={`mt-2 text-2xl font-semibold ${product.quantity > 0 ? "text-green-600" : "text-red-600"}`}>
             {product.quantity > 0 ? `In Stock: ${product.quantity} available` : "Out of Stock"}
           </p>
-          <div className="">
+
+          <div className="mt-4">
             <label className="block text-indigo-700 text-xl font-bold mb-2"> Quantity </label>
             <select className="w-32 border-2 border-black rounded-lg text-center">
               <option value="1">1</option>
               <option value="2">2</option>
               <option value="3">3</option>
               <option value="4">4</option>
-
             </select>
-           
-            
           </div>
-          <div className="border-3"> 
+
+          <div className="mt-4">
             <label className="block text-indigo-700 text-xl font-bold mb-2"> Wishlist </label>
-            <select className="border-4 border-black-300 ">
-            <option value="shopping collection">Shopping Collection</option>
-            <option value="other space">Other Wishlist</option>
+            <select className="border-4 border-black-300">
+              <option value="shopping collection">Shopping Collection</option>
+              <option value="other space">Other Wishlist</option>
             </select>
           </div>
 
           {/* Buttons */}
           <div className="mt-6 flex flex-col md:flex-row gap-6">
-           
             <button className="flex-1 bg-blue-600 hover:bg-blue-700 text-white text-2xl px-8 py-4 rounded-lg shadow-md transition duration-300">
               Add to Cart 🛒
             </button>
-            <button className="flex-1 bg-gradient-to-r from-blue-800 to bg-purple-600  text-white text-2xl px-8 py-4 rounded-lg shadow-md transition duration-300">
+            <button className="flex-1 bg-gradient-to-r from-blue-800 to bg-purple-600 text-white text-2xl px-8 py-4 rounded-lg shadow-md transition duration-300">
               Buy Now ⚡
             </button>
           </div>
@@ -127,5 +124,3 @@ const ProductDetails = () => {
 };
 
 export default ProductDetails;
-
-
