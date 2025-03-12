@@ -48,9 +48,9 @@ const ProductDetails = () => {
         <div className="w-full md:w-1/2 flex flex-col items-center ">
           {/* Main Product Image */}
           <div className="relative w-full h-[500px] overflow-hidden rounded-lg border shadow-lg bg-gray-200">
-            <img 
-              src={product.image} 
-              alt={product.name} 
+            <img
+              src={product.image}
+              alt={product.name}
               className="w-full h-full object-contain cursor-crosshair"
               onMouseMove={handleMouseMove}
               onMouseLeave={handleMouseLeave}
@@ -60,14 +60,14 @@ const ProductDetails = () => {
 
         {/* Right Section: Product Details */}
         <div className="w-full md:w-1/2 flex flex-col justify-center text-center md:text-left relative">
-          
+
           {/* Zoom Box (Positioned Over Description) */}
-          <div 
+          <div
             className="absolute left-0 top-0 bottom-1 w-[450px] h-[450px] border-2 border-gray-300 overflow-hidden rounded-lg shadow-lg bg-white z-10"
             style={{ ...zoomStyle }}
           ></div>
-
-          <h2 className="text-5xl font-bold text-gray-900">{product.name}</h2>
+          <h4 className="text-xl font-medium text-gray-900">{product.product_category[0]}</h4>
+          <h2 className="text-3xl font-bold text-gray-900">{product.name}</h2>
           <p className="text-gray-600 mt-2 text-2xl">Brand: {product.brand}</p>
 
           {/* Pricing */}
@@ -82,7 +82,7 @@ const ProductDetails = () => {
           </p>
 
           {/* Description */}
-          <p className="text-gray-700 mt-10 text-2xl leading-relaxed relative z-0">{product.description}</p>
+          <p className="text-gray-700 mt-10 text-xl leading-relaxed relative z-0">{product.description}</p>
 
           {/* Stock Information */}
           <p className={`mt-2 text-2xl font-semibold ${product.quantity > 0 ? "text-green-600" : "text-red-600"}`}>

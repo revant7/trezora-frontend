@@ -19,6 +19,7 @@ import SearchResults from './components/SearchResults.jsx'
 import { UpdateCartCountProvider } from './context/UpdateCartCount.js'
 import Wishlist from './components/Wishlist.jsx'
 import ContactUs from './components/ContactUs.jsx'
+import Checkout from './pages/Checkout.jsx'
 
 
 
@@ -56,6 +57,15 @@ function App() {
                     <>
                       <Navbar />
                       <Wishlist />
+                    </>
+                  </ProtectedRoute>
+                } />
+
+                <Route exact path="/checkout" element={
+                  <ProtectedRoute>
+                    <>
+                      <Navbar />
+                      <Checkout />
                     </>
                   </ProtectedRoute>
                 } />

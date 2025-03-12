@@ -1,6 +1,7 @@
 import React, { useCallback, useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import UpdateCartCountContext from "../context/UpdateCartCount";
 
 
@@ -95,9 +96,10 @@ const Cart = () => {
                             .reduce((total, item) => total + item.prod_price * item.prod_quantity, 0)
                             .toFixed(2)}
                     </p>
-                    <button className="mt-4 px-5 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">
+                    <Link to={"/checkout"}><button className="mt-4 px-5 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">
                         Proceed to Checkout
                     </button>
+                    </Link>
                 </div>
             )}
         </div>
