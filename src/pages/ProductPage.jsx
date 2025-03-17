@@ -6,6 +6,7 @@ const ProductDetails = () => {
   const { productId } = useParams();
   const [product, setProduct] = useState(null);
   const [zoomStyle, setZoomStyle] = useState({ display: "none" });
+  const [wishlist, setWishlist] = useState(false); // Wishlist state
 
   useEffect(() => {
     axios
@@ -31,7 +32,7 @@ const ProductDetails = () => {
     setZoomStyle({
       display: "block",
       backgroundImage: `url(${product.image})`,
-      backgroundSize: "180%", // Adjust zoom level
+      backgroundSize: "180%",
       backgroundPosition: `${x}% ${y}%`,
     });
   };
@@ -40,13 +41,25 @@ const ProductDetails = () => {
     setZoomStyle({ display: "none" });
   };
 
+  // Wishlist toggle function
+  const toggleWishlist = () => {
+    setWishlist(!wishlist);
+  };
+
   return (
     <div className="w-full min-h-screen flex items-center justify-center bg-gray-100 p-6">
       <div className="w-full h-full bg-white shadow-xl p-10 flex flex-col md:flex-row gap-10">
 
         {/* Left Section: Image & Zoom Box */}
-        <div className="w-full md:w-1/2 flex flex-col items-center ">
-          {/* Main Product Image */}
+        <div className="w-full md:w-1/2 flex flex-col items-center relative">
+          {/* Wishlist Heart Icon (Top Right of Image) */}
+          <button
+            className={`absolute bottom-[350px;] right-5 text-4xl transition duration-300 ${wishlist ? "text-red-600" : "text-gray-400"}`}
+            onClick={toggleWishlist}
+          >
+            {wishlist ? "❤️" : "🤍"}
+          </button>
+
           <div className="relative w-full h-[500px] overflow-hidden rounded-lg border shadow-lg bg-gray-200">
             <img
               src={product.image}
@@ -61,7 +74,7 @@ const ProductDetails = () => {
         {/* Right Section: Product Details */}
         <div className="w-full md:w-1/2 flex flex-col justify-center text-center md:text-left relative">
 
-          {/* Zoom Box (Positioned Over Description) */}
+          {/* Zoom Box */}
           <div
             className="absolute left-0 top-0 bottom-1 w-[450px] h-[450px] border-2 border-gray-300 overflow-hidden rounded-lg shadow-lg bg-white z-10"
             style={{ ...zoomStyle }}
@@ -89,6 +102,7 @@ const ProductDetails = () => {
             {product.quantity > 0 ? `In Stock: ${product.quantity} available` : "Out of Stock"}
           </p>
 
+          {/* Quantity Selection */}
           <div className="mt-4">
             <label className="block text-indigo-700 text-xl font-bold mb-2"> Quantity </label>
             <select className="w-32 border-2 border-black rounded-lg text-center">
@@ -96,14 +110,6 @@ const ProductDetails = () => {
               <option value="2">2</option>
               <option value="3">3</option>
               <option value="4">4</option>
-            </select>
-          </div>
-
-          <div className="mt-4">
-            <label className="block text-indigo-700 text-xl font-bold mb-2"> Wishlist </label>
-            <select className="border-4 border-black-300">
-              <option value="shopping collection">Shopping Collection</option>
-              <option value="other space">Other Wishlist</option>
             </select>
           </div>
 
@@ -124,3 +130,4 @@ const ProductDetails = () => {
 };
 
 export default ProductDetails;
+
