@@ -51,7 +51,7 @@ Welcome to **Trezora**! Trezora is a modern e-commerce platform that offers a se
 
 This project is licensed under a **Custom License**.  
 - No one is allowed to **copy**, **sell**, or **use** this project for their business or for earning money.  
-- For any permissions or collaboration inquiries, please contact **Yash Joshi**.
+- For any permissions or collaboration inquiries, please contact **Revant Khanna[revant070206@gmail.com]**.
 
 
 
