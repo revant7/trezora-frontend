@@ -44,6 +44,7 @@ Welcome to **Trezora**! Trezora is a modern e-commerce platform that offers a se
 
 ## 👤 Contributor
 
+- **Revant Khanna**  
 - **Yash Joshi**  
 
 ## ⚖️ License
