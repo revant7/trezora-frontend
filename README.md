@@ -1,3 +1,64 @@
+# Trezora - Frontend
+
+Welcome to **Trezora**! Trezora is a modern e-commerce platform that offers a seamless online shopping experience. This is the frontend of the application, built using **React** and styled with **Tailwind CSS**.
+
+## 🚀 Features
+
+- ✅ Responsive and modern design  
+- ✅ Product listings and detailed product pages  
+- ✅ Search and filter options  
+- ✅ Shopping cart management  
+- ✅ User authentication and profile management  
+- ✅ Order placement and tracking  
+
+## 🛠️ Tech Stack
+
+- **Frontend:** React  
+- **Styling:** Tailwind CSS  
+- **State Management:** Context API / Redux (if applicable)  
+- **Routing:** React Router  
+
+## ⚙️ Installation and Setup
+
+1. **Clone the repository:**  
+    ```bash
+    git clone https://github.com/YOUR_GITHUB_USERNAME/trezora-frontend.git
+    ```
+
+2. **Navigate to the project directory:**  
+    ```bash
+    cd trezora-frontend
+    ```
+
+3. **Install dependencies:**  
+    ```bash
+    npm install
+    ```
+
+4. **Run the development server:**  
+    ```bash
+    npm start
+    ```
+
+5. The app will be live at `http://localhost:3000`.
+
+## 👤 Contributor
+
+- **Revant Khanna**  
+- **Yash Joshi**  
+
+## ⚖️ License
+
+This project is licensed under a **Custom License**.  
+- No one is allowed to **copy**, **sell**, or **use** this project for their business or for earning money.  
+- For any permissions or collaboration inquiries, please contact **Revant Khanna[revant070206@gmail.com]**.
+
+
+
+
+
+
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
