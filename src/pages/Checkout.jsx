@@ -61,18 +61,53 @@ const CompleteOrder = () => {
     return;
 };
 
-export default function Checkout() {
 
+export default function Checkout() {
     const [paymentMethod, setPaymentMethod] = useState("");
+    const API_URL = process.env.REACT_APP_API_URL;
+    const [apiData, setApiData] = useState(null);
+    const [error, setError] = useState(null); // Added for better error handling
+
+    const getProfileDetails = async () => {
+        try {
+            const response = await axios.get(`${API_URL}/api/get-profile-details/`, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+                },
+            });
+            setApiData(response.data);
+        } catch (error) {
+            console.error("Error fetching profile details:", error);
+            setError("Failed to load profile details");
+        }
+    };
+
+    useEffect(() => {
+        getProfileDetails();
+    }, []);
 
     return (
         <div className="p-5">
             <h1 className="flex justify-center text-4xl font-bold bg-gray-100 p-4">Checkout</h1>
             <div className="grid grid-cols-2 gap-4 justify-center items-center py-[40px]">
                 <div className="bg-gray-500 p-5 text-white rounded-lg">
-                    <div className="bg-gray-200  text-black rounded-md mr-2">
-                        <h2 className="text-xl font-bold">Delivering to Yash Joshi</h2>
-                        <p>G85 Third Floor Durga Mandir Gali, East Vinod Nagar, New Delhi, 110091, India</p>
+                    <div className="bg-gray-200 text-black rounded-md mr-2">
+                        <h2 className="text-xl font-bold">
+                            Delivering to {apiData === null ? "Loading..." : apiData.first_name}
+                        </h2>
+                        {apiData === null ? (
+                            "Loading..."
+                        ) : !apiData?.address?.address ? (
+                            <>
+                                <p className="text-red-600">
+                                    Please update your complete address in your profile section before completing your order.
+                                </p>
+                                <p>No address provided</p>
+                            </>
+                        ) : (
+                            <p>{apiData.address.address}, {apiData.address.city}, {apiData.address.state}, {apiData.address.pincode}, India</p>
+                        )}
+
                     </div>
                     {/* Payments Section */}
                     <div className="bg-gray-200 p-3 rounded-lg mt-5 text-black h-auto">
@@ -151,7 +186,7 @@ export default function Checkout() {
                                         <label htmlFor="cash">Cash On Delivery</label>
                                     </div>
                                     <div className='flex justify-center py-[30px]'>
-                                        <button className='bg-yellow-500 w-[450px] h-[40px] rounded-[300px] text-xl font-bold'>Complete Order</button>
+                                        <button className='bg-yellow-500 w-[450px] h-[40px] rounded-[300px] text-xl font-bold' disabled={apiData === null || !apiData?.address?.address}>Complete Order</button>
                                     </div>
 
                                 </div>
@@ -159,9 +194,7 @@ export default function Checkout() {
                         </div>
                     </div>
                 </div>
-
                 <div className="bg-gray-200 p-5 text-black w-[430px] h-[400px] rounded-lg mx-auto">
-                    <button className="bg-yellow-500 text-black rounded-xl w-full h-[35px] font-bold">Use This Address</button>
                     <hr className="my-3" />
                     <OrderSummary />
                 </div>
