@@ -53,28 +53,26 @@ const Orders = () => {
 
                             <ul className="space-y-3">
                                 {order.order_items.map((item) => (
-                                    // <li
-                                    //     key={item.product.id}
-                                    //     className="flex justify-between items-center border-t pt-3"
-                                    // >
-                                    //     <div className="flex items-center space-x-4">
-                                    //         <img
-                                    //             src={item.product.image}
-                                    //             alt={item.product.name}
-                                    //             className="w-12 h-12 rounded object-cover"
-                                    //         />
-                                    //         <div>
-                                    //             <h4 className="font-medium">{item.product.name}</h4>
-                                    //             <p className="text-gray-500">
-                                    //                 ₹{item.product.price.toFixed(2)}
-                                    //             </p>
-                                    //         </div>
-                                    //     </div>
-                                    //     <span className="text-gray-700">Qty: {item.quantity}</span>
-                                    // </li>
-                                    <div>
-                                        {item}
-                                    </div>
+                                    <li
+                                        key={item.product_id}
+                                        className="flex justify-between items-center border-t pt-3"
+                                    >
+                                        <div className="flex items-center space-x-4">
+                                            <img
+                                                src={item.product_image}
+                                                alt={item.product_name}
+                                                className="w-12 h-12 rounded object-cover"
+                                            />
+                                            <div>
+                                                <h4 className="font-medium">{item.product_name}</h4>
+                                                <p className="text-gray-500">
+                                                    ₹{item.product_price}
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <span className="text-gray-700">Qty: {item.product_quantity}</span>
+                                    </li>
+
                                 ))}
                             </ul>
                         </div>
