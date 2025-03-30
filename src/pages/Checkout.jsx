@@ -2,11 +2,14 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
-const OrderSummary = () => {
-
+export default function Checkout() {
+    const [cartData, setCartData] = useState([]);
+    const [paymentMethod, setPaymentMethod] = useState("");
     const API_URL = process.env.REACT_APP_API_URL;
-    const [apiData, setApiData] = useState([]);
+    const [apiData, setApiData] = useState(null);
+    const [error, setError] = useState(null); // Added for better error handling
     const navigate = useNavigate();
+
 
     const fetchData = useCallback(async () => {
         const user = localStorage.getItem('accessToken');
@@ -19,54 +22,12 @@ const OrderSummary = () => {
                     Authorization: `Bearer ${user}`
                 }
             });
-            setApiData(response.data);
+            setCartData(response.data);
 
         }
     }, [navigate]);
 
-    useEffect(() => {
-        fetchData();
-    }, [fetchData])
 
-    const subtotal = apiData.reduce((acc, item) => acc + item.prod_price * item.prod_quantity, 0);
-    const tax = subtotal * 0.1;
-    const deliverycharge = subtotal >= 500 ? 0 : 50;
-    const total = subtotal + tax + deliverycharge;
-
-    return (
-
-        <div className="bg-gray-200 p-5 text-black w-[400px] rounded-lg">
-            <h2 className="text-xl font-bold">Order Summary</h2>
-            <div className="flex justify-between">
-                <span>Items:</span>
-                <span>₹{subtotal.toFixed(2)}</span>
-            </div>
-            <div className="flex justify-between">
-                <span>Tax (10%):</span>
-                <span>₹{tax.toFixed(2)}</span>
-            </div>
-            <div className="flex justify-between">
-                <span>Delivery Charge:</span>
-                <span>₹{deliverycharge.toFixed(2)}</span>
-            </div>
-            <div className="flex justify-between font-bold">
-                <span>Total:</span>
-                <span>₹{total.toFixed(2)}</span>
-            </div>
-        </div>
-    );
-};
-
-const CompleteOrder = () => {
-    return;
-};
-
-
-export default function Checkout() {
-    const [paymentMethod, setPaymentMethod] = useState("");
-    const API_URL = process.env.REACT_APP_API_URL;
-    const [apiData, setApiData] = useState(null);
-    const [error, setError] = useState(null); // Added for better error handling
 
     const getProfileDetails = async () => {
         try {
@@ -81,6 +42,33 @@ export default function Checkout() {
             setError("Failed to load profile details");
         }
     };
+
+    const subtotal = cartData.reduce((acc, item) => acc + item.prod_price * item.prod_quantity, 0);
+    const tax = subtotal * 0.1;
+    const deliverycharge = subtotal >= 500 ? 0 : 50;
+    const total = subtotal + tax + deliverycharge;
+
+    const CompleteOrder = async () => {
+        const user = localStorage.getItem('accessToken');
+        if (!user) {
+            navigate('/sign-in', { replace: true })
+
+        } else {
+            const response = await axios.post(`${API_URL}/api/post-orders/`, { order_data: cartData }, {
+                headers: {
+                    Authorization: `Bearer ${user}`
+                }
+            });
+            navigate('/orders', { replace: true })
+
+
+        }
+    };
+
+
+    useEffect(() => {
+        fetchData();
+    }, [fetchData])
 
     useEffect(() => {
         getProfileDetails();
@@ -185,9 +173,7 @@ export default function Checkout() {
                                         <input type="radio" id="cash" name="payment" className="mr-2" />
                                         <label htmlFor="cash">Cash On Delivery</label>
                                     </div>
-                                    <div className='flex justify-center py-[30px]'>
-                                        <button className='bg-yellow-500 w-[450px] h-[40px] rounded-[300px] text-xl font-bold' disabled={apiData === null || !apiData?.address?.address}>Complete Order</button>
-                                    </div>
+
 
                                 </div>
                             </div>
@@ -196,7 +182,30 @@ export default function Checkout() {
                 </div>
                 <div className="bg-gray-200 p-5 text-black w-[430px] h-[400px] rounded-lg mx-auto">
                     <hr className="my-3" />
-                    <OrderSummary />
+                    <div className="bg-gray-200 p-5 text-black w-[400px] rounded-lg">
+                        <h2 className="text-xl font-bold">Order Summary</h2>
+                        <div className="flex justify-between">
+                            <span>Items:</span>
+                            <span>₹{subtotal.toFixed(2)}</span>
+                        </div>
+                        <div className="flex justify-between">
+                            <span>Tax (10%):</span>
+                            <span>₹{tax.toFixed(2)}</span>
+                        </div>
+                        <div className="flex justify-between">
+                            <span>Delivery Charge:</span>
+                            <span>₹{deliverycharge.toFixed(2)}</span>
+                        </div>
+                        <div className="flex justify-between font-bold">
+                            <span>Total:</span>
+                            <span>₹{total.toFixed(2)}</span>
+                        </div>
+                        <div className='flex justify-center py-[30px]'>
+                            <button className='bg-yellow-500 w-[450px] h-[40px] rounded-[300px] text-xl font-bold' disabled={apiData === null || !apiData?.address?.address} onClick={
+                                CompleteOrder
+                            }>Complete Order</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
