@@ -50,13 +50,13 @@ export default function CategoryPage() {
             </h2>
 
             <div className="flex justify-center items-center py-10 bg-gradient-to-b from-gray-100 to-gray-300 min-h-screen">
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 max-w-6xl px-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-40 max-w-6xl px-6">
                     {searchResults.map((product) => (
                         <div key={product.unique_id}
                             className="w-[400px] h-[600px] border-2 border-gray-300 bg-white rounded-2xl shadow-xl p-6 
                                     hover:shadow-2xl transition duration-300 transform hover:-translate-y-2 hover:scale-105 
                                     flex flex-col items-center text-center">
-                            <img className="w-full h-52 object-cover rounded-lg shadow-md" src={product.image} alt={product.name} />
+                            <img className="w-full h-52 object-contain rounded-lg shadow-md" src={product.image} alt={product.name} />
                             <h3 className="font-extrabold text-2xl mt-5 text-gray-800">{product.name}</h3>
                             <p className="text-md text-gray-600 mt-2 font-medium">Price: <span className="text-purple-600 font-semibold">{product.price}</span></p>
                             <h4 className="font-bold mt-3 text-yellow-500 text-lg">⭐ {product.rating}</h4>
