@@ -1,36 +1,114 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
+import UpdateCartCountContext from "../context/UpdateCartCount";
 
 const ProductDetails = () => {
   const { productId } = useParams();
   const navigate = useNavigate();
+  const API_URL = process.env.REACT_APP_API_URL;
+  const { setCartCount } = useContext(UpdateCartCountContext);
+
   const [product, setProduct] = useState(null);
-  const [wishlist, setWishlist] = useState(() => {
-    const saved = localStorage.getItem("wishlist");
-    return saved ? JSON.parse(saved) : [];
-  });
+  const [zoomStyle, setZoomStyle] = useState({ display: "none" });
+  const [isInWishlist, setIsInWishlist] = useState(false);
+  const [wishlistLoading, setWishlistLoading] = useState(false);
+  const [cartLoading, setCartLoading] = useState(false);
+  const [quantity, setQuantity] = useState(1);
 
   useEffect(() => {
-    axios
-      .get(`http://127.0.0.1:8000/api/get-product-by-id/${productId}/`)
-      .then((response) => setProduct(response.data))
-      .catch((error) => console.error("Error fetching product:", error));
+    fetchProduct();
+    checkWishlistStatus();
   }, [productId]);
 
-  if (!product) {
-    return (
-      <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-primary-50 to-accent-50">
-        <div className="text-center">
-          <div className="w-16 h-16 mx-auto mb-4 relative">
-            <div className="absolute inset-0 bg-gradient-to-r from-primary-400 to-accent-400 rounded-full animate-pulse"></div>
-            <div className="absolute inset-2 bg-white rounded-full animate-pulse"></div>
-          </div>
-          <p className="text-lg font-semibold text-neutral-600">Loading amazing product...</p>
-        </div>
-      </div>
-    );
-  }
+  const fetchProduct = async () => {
+    try {
+      const response = await axios.get(`${API_URL}/api/get-product-by-id/${productId}/`);
+      setProduct(response.data);
+    } catch (error) {
+      console.error("Error fetching product:", error);
+    }
+  };
+
+  const checkWishlistStatus = async () => {
+    const user = localStorage.getItem('accessToken');
+    if (user) {
+      try {
+        const response = await axios.get(`${API_URL}/api/get-wishlist/`, {
+          headers: { Authorization: `Bearer ${user}` }
+        });
+        const wishlistItems = response.data;
+        const isProductInWishlist = wishlistItems.some(item => item.product.unique_id === productId);
+        setIsInWishlist(isProductInWishlist);
+      } catch (error) {
+        console.error('Error checking wishlist status:', error);
+      }
+    }
+  };
+
+  const toggleWishlist = async () => {
+    const user = localStorage.getItem('accessToken');
+    if (!user) {
+      navigate('/sign-in', { replace: true });
+      return;
+    }
+
+    setWishlistLoading(true);
+    try {
+      if (isInWishlist) {
+        // Remove from wishlist
+        await axios.delete(`${API_URL}/api/remove-from-wishlist/`, {
+          headers: { Authorization: `Bearer ${user}` },
+          data: { unique_id: productId }
+        });
+        setIsInWishlist(false);
+      } else {
+        // Add to wishlist
+        await axios.post(`${API_URL}/api/add-to-wishlist/`,
+          { unique_id: productId },
+          { headers: { Authorization: `Bearer ${user}` } }
+        );
+        setIsInWishlist(true);
+      }
+    } catch (error) {
+      console.error('Error toggling wishlist:', error);
+    } finally {
+      setWishlistLoading(false);
+    }
+  };
+
+  const addToCart = async () => {
+    const user = localStorage.getItem('accessToken');
+    if (!user) {
+      navigate('/sign-in', { replace: true });
+      return;
+    }
+
+    setCartLoading(true);
+    try {
+      const data = {
+        unique_id: productId,
+        quantity: quantity,
+      }
+      await axios.post(`${API_URL}/api/add-item-to-cart/`, data, {
+        headers: { Authorization: `Bearer ${user}` }
+      });
+
+      // Update cart count
+      const cartResponse = await axios.get(`${API_URL}/api/get-cart-items/`, {
+        headers: { Authorization: `Bearer ${user}` }
+      });
+      setCartCount(cartResponse.data.length);
+
+      // Show success message or redirect to cart
+      alert('Product added to cart successfully!');
+    } catch (error) {
+      console.error('Error adding to cart:', error);
+      alert('Error adding product to cart. Please try again.');
+    } finally {
+      setCartLoading(false);
+    }
+  };
 
   // Handle zoom effect
   const handleMouseMove = (e) => {
@@ -50,10 +128,19 @@ const ProductDetails = () => {
     setZoomStyle({ display: "none" });
   };
 
-  // Navigate to Wishlist Page
-  const goToWishlist = () => {
-    navigate("/wishlist");
-  };
+  if (!product) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-primary-50 to-accent-50">
+        <div className="text-center">
+          <div className="w-16 h-16 mx-auto mb-4 relative">
+            <div className="absolute inset-0 bg-gradient-to-r from-primary-400 to-accent-400 rounded-full animate-pulse"></div>
+            <div className="absolute inset-2 bg-white rounded-full animate-pulse"></div>
+          </div>
+          <p className="text-lg font-semibold text-neutral-600">Loading amazing product...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-white via-neutral-50 to-primary-50/30 p-6">
@@ -63,7 +150,7 @@ const ProductDetails = () => {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
 
             {/* Left Section: Image & Zoom */}
-            <div className="space-y-6">
+            <div className="relative">
 
               {/* Main Product Image */}
               <div className="relative group">
@@ -84,21 +171,39 @@ const ProductDetails = () => {
 
                 {/* Wishlist Button */}
                 <button
-                  className={`absolute top-4 right-4 w-12 h-12 rounded-full glassmorphism backdrop-blur-lg shadow-medium smooth-transition hover:scale-110 focus:outline-none focus:ring-2 focus:ring-primary-300 ${wishlist
-                    ? "bg-error-500/20 text-error-500 hover:bg-error-500/30"
-                    : "bg-white/20 text-neutral-400 hover:bg-white/30 hover:text-error-400"
+                  className={`absolute top-4 right-4 w-12 h-12 rounded-full glassmorphism backdrop-blur-lg shadow-medium smooth-transition hover:scale-110 focus:outline-none focus:ring-2 focus:ring-primary-300 disabled:opacity-50 disabled:cursor-not-allowed ${isInWishlist
+                    ? "bg-red-500/90 text-white hover:bg-red-600/90"
+                    : "bg-white/90 text-neutral-600 hover:bg-red-50 hover:text-red-500"
                     }`}
                   onClick={toggleWishlist}
+                  disabled={wishlistLoading}
                 >
-                  <svg className="w-6 h-6 mx-auto" fill={wishlist ? "currentColor" : "none"} stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-                  </svg>
+                  {wishlistLoading ? (
+                    <svg className="w-5 h-5 mx-auto animate-spin" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                    </svg>
+                  ) : (
+                    <svg
+                      className={`w-6 h-6 mx-auto smooth-transition ${isInWishlist ? 'scale-110' : ''}`}
+                      fill={isInWishlist ? "currentColor" : "none"}
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={isInWishlist ? 0 : 2}
+                        d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"
+                      />
+                    </svg>
+                  )}
                 </button>
               </div>
 
-              {/* Zoom Box */}
+              {/* Zoom Box - Positioned absolutely to the right */}
               <div
-                className="hidden lg:block w-full aspect-square border-2 border-neutral-200 overflow-hidden rounded-2xl shadow-large bg-white"
+                className="hidden xl:block absolute top-0 left-full ml-6 w-96 h-96 border-2 border-neutral-200 overflow-hidden rounded-2xl shadow-large bg-white z-10"
                 style={{ ...zoomStyle }}
               />
             </div>
@@ -163,68 +268,136 @@ const ProductDetails = () => {
               {/* Quantity Selection */}
               <div className="space-y-3">
                 <label className="block text-lg font-semibold text-neutral-700">Quantity</label>
-                <select className="px-4 py-3 border-2 border-neutral-200 rounded-xl bg-white focus:ring-2 focus:ring-primary-400 focus:border-primary-400 outline-none smooth-transition text-lg font-medium">
-                  <option value="1">1</option>
-                  <option value="2">2</option>
-                  <option value="3">3</option>
-                  <option value="4">4</option>
-                  <option value="5">5</option>
+                <select
+                  value={quantity}
+                  onChange={(e) => setQuantity(parseInt(e.target.value))}
+                  className="px-4 py-3 border-2 border-neutral-200 rounded-xl bg-white focus:ring-2 focus:ring-primary-400 focus:border-primary-400 outline-none smooth-transition text-lg font-medium"
+                >
+                  {[...Array(Math.min(product.quantity, 10))].map((_, i) => (
+                    <option key={i + 1} value={i + 1}>{i + 1}</option>
+                  ))}
                 </select>
               </div>
 
               {/* Action Buttons */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <button
-                  className="py-4 px-6 bg-gradient-to-r from-primary-500 to-accent-500 text-white font-semibold rounded-xl shadow-medium hover:shadow-glow-purple smooth-transition hover:scale-[1.02] active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-primary-300 focus:ring-offset-2"
-                  disabled={product.quantity === 0}
-                >
-                  <span className="flex items-center justify-center gap-2">
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-2.5 5M7 13l2.5 5m0 0L17 18" />
-                    </svg>
-                    Add to Cart
-                  </span>
-                </button>
+              <div className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <button
+                    className="py-4 px-6 bg-gradient-to-r from-primary-500 to-accent-500 text-white font-semibold rounded-xl shadow-medium hover:shadow-glow-purple smooth-transition hover:scale-[1.02] active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-primary-300 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                    disabled={product.quantity === 0 || cartLoading}
+                    onClick={addToCart}
+                  >
+                    <span className="flex items-center justify-center gap-2">
+                      {cartLoading ? (
+                        <>
+                          <svg className="w-5 h-5 animate-spin" viewBox="0 0 24 24">
+                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                          </svg>
+                          Adding...
+                        </>
+                      ) : (
+                        <>
+                          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-2.5 5M7 13l2.5 5m0 0L17 18" />
+                          </svg>
+                          Add to Cart
+                        </>
+                      )}
+                    </span>
+                  </button>
 
-                <button
-                  className="py-4 px-6 bg-gradient-to-r from-accent-600 to-primary-600 text-white font-semibold rounded-xl shadow-medium hover:shadow-glow smooth-transition hover:scale-[1.02] active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-accent-300 focus:ring-offset-2"
-                  disabled={product.quantity === 0}
-                >
-                  <span className="flex items-center justify-center gap-2">
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                    </svg>
-                    Buy Now
+                  <button
+                    className="py-4 px-6 bg-gradient-to-r from-accent-600 to-primary-600 text-white font-semibold rounded-xl shadow-medium hover:shadow-glow smooth-transition hover:scale-[1.02] active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-accent-300 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                    disabled={product.quantity === 0}
+                    onClick={() => {
+                      addToCart();
+                      setTimeout(() => navigate('/checkout'), 1000);
+                    }}
+                  >
+                    <span className="flex items-center justify-center gap-2">
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                      </svg>
+                      Buy Now
+                    </span>
+                  </button>
+                </div>
+
+                {/* Wishlist Status */}
+                <div className="flex items-center justify-center gap-2">
+                  <div className={`w-2 h-2 rounded-full ${isInWishlist ? 'bg-red-500' : 'bg-neutral-300'}`}></div>
+                  <span className="text-sm text-neutral-600">
+                    {isInWishlist ? 'Added to wishlist' : 'Not in wishlist'}
                   </span>
-                </button>
+                  <button
+                    onClick={() => navigate('/wishlist')}
+                    className="text-sm text-primary-600 hover:text-primary-700 font-medium underline smooth-transition ml-2"
+                  >
+                    View Wishlist
+                  </button>
+                </div>
               </div>
 
               {/* Product Description */}
-              <div className="space-y-4 p-6 glassmorphism bg-white/50 backdrop-blur-sm rounded-2xl border border-neutral-200">
-                <h3 className="text-xl font-bold text-neutral-800">Product Description</h3>
-                <p className="text-neutral-700 leading-relaxed">
+              <div className="space-y-6 p-8 glassmorphism bg-gradient-to-br from-white/80 to-neutral-50/80 backdrop-blur-sm rounded-3xl border border-white/50 shadow-large">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-2 h-8 bg-gradient-to-b from-primary-500 to-accent-500 rounded-full"></div>
+                  <h3 className="text-2xl font-bold text-neutral-800">Product Details</h3>
+                </div>
+                <p className="text-neutral-700 leading-relaxed text-lg">
                   {product.description}
                 </p>
-              </div>
 
-              {/* Features or Additional Info */}
-              <div className="grid grid-cols-2 gap-4">
-                <div className="p-4 text-center glassmorphism bg-white/50 backdrop-blur-sm rounded-xl border border-neutral-200">
-                  <div className="w-8 h-8 mx-auto mb-2 text-primary-500">
-                    <svg fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                    </svg>
+                {/* Key Features */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
+                  <div className="flex items-center gap-3 p-4 bg-white/60 rounded-xl border border-neutral-200/50">
+                    <div className="w-10 h-10 bg-gradient-to-br from-primary-500 to-accent-500 rounded-xl flex items-center justify-center">
+                      <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                    </div>
+                    <div>
+                      <div className="font-semibold text-neutral-800">Quality Assured</div>
+                      <div className="text-sm text-neutral-600">Premium materials used</div>
+                    </div>
                   </div>
-                  <p className="text-sm font-semibold text-neutral-700">Quality Assured</p>
-                </div>
 
-                <div className="p-4 text-center glassmorphism bg-white/50 backdrop-blur-sm rounded-xl border border-neutral-200">
-                  <div className="w-8 h-8 mx-auto mb-2 text-primary-500">
-                    <svg fill="currentColor" viewBox="0 0 20 20">
-                      <path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z" />
-                    </svg>
+                  <div className="flex items-center gap-3 p-4 bg-white/60 rounded-xl border border-neutral-200/50">
+                    <div className="w-10 h-10 bg-gradient-to-br from-accent-500 to-primary-500 rounded-xl flex items-center justify-center">
+                      <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                      </svg>
+                    </div>
+                    <div>
+                      <div className="font-semibold text-neutral-800">Fast Shipping</div>
+                      <div className="text-sm text-neutral-600">Express delivery available</div>
+                    </div>
                   </div>
-                  <p className="text-sm font-semibold text-neutral-700">Fast Delivery</p>
+
+                  <div className="flex items-center gap-3 p-4 bg-white/60 rounded-xl border border-neutral-200/50">
+                    <div className="w-10 h-10 bg-gradient-to-br from-green-500 to-emerald-500 rounded-xl flex items-center justify-center">
+                      <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                      </svg>
+                    </div>
+                    <div>
+                      <div className="font-semibold text-neutral-800">Warranty</div>
+                      <div className="text-sm text-neutral-600">1 year manufacturer warranty</div>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-3 p-4 bg-white/60 rounded-xl border border-neutral-200/50">
+                    <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl flex items-center justify-center">
+                      <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 15v-1a4 4 0 00-4-4H8m0 0l3 3m-3-3l3-3m9 14V5a2 2 0 00-2-2H6a2 2 0 00-2 2v16l4-2 4 2 4-2 4 2z" />
+                      </svg>
+                    </div>
+                    <div>
+                      <div className="font-semibold text-neutral-800">Easy Returns</div>
+                      <div className="text-sm text-neutral-600">30-day return policy</div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>

@@ -25,10 +25,19 @@ export default function CreateAccount() {
             [id]: value,
         }));
 
+        // Clear message when user starts typing
+        if (message) {
+            setMessage("");
+        }
     });
 
     const handlePassword = ((e) => {
         setConfirmPassword(e.target.value);
+
+        // Clear message when user starts typing
+        if (message) {
+            setMessage("");
+        }
     })
 
     const handleSubmit = (async (e) => {
@@ -36,42 +45,75 @@ export default function CreateAccount() {
         setLoading(true);
         setMessage("");
 
-        if (formData.password === confirmPassword) {
+        // Client-side password validation
+        if (formData.password !== confirmPassword) {
+            setMessage("Error: Passwords do not match. Please make sure both password fields are identical.");
+            setLoading(false);
+            return;
+        }
 
-            const dataToSend = {
-                first_name: formData.firstName,
-                last_name: formData.lastName,
-                mobile_number: formData.mobileNumber,
-                email: formData.email,
-                password: formData.password,
+        const dataToSend = {
+            first_name: formData.firstName,
+            last_name: formData.lastName,
+            mobile_number: formData.mobileNumber,
+            email: formData.email,
+            password: formData.password,
+            confirm_password: confirmPassword,
+        };
 
-            };
+        try {
+            const response = await axios.post(`${API_URL}/api/create-customer-account/`, dataToSend, {
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            });
 
-            try {
-                const response = await axios.post(`${API_URL}/api/create-customer-account/`, dataToSend, {
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
+            // Handle successful response
+            if (response.status === 200 || response.status === 201) {
+                setMessage(response.data.message || "Account created successfully! Welcome to Trezora!");
+                setFormData({
+                    firstName: "",
+                    lastName: "",
+                    email: "",
+                    mobileNumber: "",
+                    password: ""
                 });
-
-                if (response.status === 200 || response.status === 201) {
-                    setMessage("Form submitted successfully!");
-                    setFormData({
-                        firstName: "",
-                        lastName: "",
-                        email: "",
-                        mobileNumber: "",
-                        password: ""
-                    });
-                    setConfirmPassword("");
-                } else {
-                    setMessage("Failed to submit the form. Please try again.");
-                }
-            } catch (error) {
-                setMessage(`Error: ${error.response?.data?.detail || error.message}`);
-            } finally {
-                setLoading(false);
+                setConfirmPassword("");
             }
+        } catch (error) {
+            console.error('Error creating account:', error);
+
+            // Handle different types of errors
+            if (error.response && error.response.data) {
+                const errorData = error.response.data;
+
+                if (errorData.message) {
+                    // Single error message
+                    setMessage(`Error: ${errorData.message}`);
+                } else if (errorData.errors && Array.isArray(errorData.errors)) {
+                    // Multiple error messages
+                    setMessage(`Error: ${errorData.errors.join('. ')}`);
+                } else if (errorData.details) {
+                    // Field-specific errors
+                    const errorMessages = [];
+                    Object.keys(errorData.details).forEach(field => {
+                        if (Array.isArray(errorData.details[field])) {
+                            errorMessages.push(...errorData.details[field]);
+                        }
+                    });
+                    setMessage(`Error: ${errorMessages.join('. ')}`);
+                } else {
+                    setMessage("Error: An unexpected error occurred. Please try again.");
+                }
+            } else if (error.request) {
+                // Network error
+                setMessage("Error: Unable to connect to the server. Please check your internet connection and try again.");
+            } else {
+                // Other errors
+                setMessage("Error: An unexpected error occurred. Please try again.");
+            }
+        } finally {
+            setLoading(false);
         }
     });
 
@@ -200,13 +242,37 @@ export default function CreateAccount() {
                                         type="password"
                                         id="confirmPassword"
                                         placeholder="••••••••"
-                                        className="w-full px-4 py-3 glassmorphism bg-white/50 backdrop-blur-sm border border-neutral-200 rounded-xl focus:ring-2 focus:ring-primary-400 focus:border-primary-400 outline-none smooth-transition placeholder-neutral-400 text-neutral-700"
+                                        className={`w-full px-4 py-3 glassmorphism bg-white/50 backdrop-blur-sm border rounded-xl focus:ring-2 focus:ring-primary-400 focus:border-primary-400 outline-none smooth-transition placeholder-neutral-400 text-neutral-700 ${confirmPassword && formData.password && confirmPassword !== formData.password
+                                            ? 'border-red-300 focus:ring-red-400 focus:border-red-400'
+                                            : confirmPassword && formData.password && confirmPassword === formData.password
+                                                ? 'border-green-300 focus:ring-green-400 focus:border-green-400'
+                                                : 'border-neutral-200'
+                                            }`}
                                         required
                                         value={confirmPassword}
                                         onChange={handlePassword}
                                     />
                                     <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-primary-400/10 to-accent-400/10 opacity-0 focus-within:opacity-100 smooth-transition pointer-events-none" />
+
+                                    {/* Password match indicator */}
+                                    {confirmPassword && formData.password && (
+                                        <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+                                            {confirmPassword === formData.password ? (
+                                                <svg className="w-5 h-5 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                                                </svg>
+                                            ) : (
+                                                <svg className="w-5 h-5 text-red-500" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                                                </svg>
+                                            )}
+                                        </div>
+                                    )}
                                 </div>
+                                {/* Password match text indicator */}
+                                {confirmPassword && formData.password && confirmPassword !== formData.password && (
+                                    <p className="text-sm text-red-600 mt-1">Passwords do not match</p>
+                                )}
                             </div>
                         </div>
 
@@ -248,10 +314,24 @@ export default function CreateAccount() {
 
                 {/* Message Display */}
                 {message && (
-                    <div className="mt-6 p-4 glassmorphism bg-white/70 backdrop-blur-sm rounded-xl border border-white/50 animate-fade-in text-center">
-                        <p className={`font-medium ${message.includes('Error') ? 'text-error-600' : 'text-success-600'}`}>
-                            {message}
-                        </p>
+                    <div className={`mt-6 p-4 glassmorphism backdrop-blur-sm rounded-xl border animate-fade-in text-center ${message.includes('Error') || message.includes('error')
+                        ? 'bg-red-50/70 border-red-200/50 text-red-700'
+                        : 'bg-green-50/70 border-green-200/50 text-green-700'
+                        }`}>
+                        <div className="flex items-center justify-center gap-2">
+                            {message.includes('Error') || message.includes('error') ? (
+                                <svg className="w-5 h-5 text-red-500" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                                </svg>
+                            ) : (
+                                <svg className="w-5 h-5 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                                </svg>
+                            )}
+                            <p className="font-medium">
+                                {message}
+                            </p>
+                        </div>
                     </div>
                 )}
             </div>

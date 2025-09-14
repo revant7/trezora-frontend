@@ -89,8 +89,8 @@ export default function CategoryPage() {
     };
 
     const handleBrandToggle = (brand) => {
-        setSelectedBrands(prev =>
-            prev.includes(brand)
+        setSelectedBrands(prev => 
+            prev.includes(brand) 
                 ? prev.filter(b => b !== brand)
                 : [...prev, brand]
         );
@@ -135,10 +135,11 @@ export default function CategoryPage() {
                             <div className="flex items-center gap-2 bg-neutral-100 rounded-xl p-1">
                                 <button
                                     onClick={() => setViewMode('grid')}
-                                    className={`p-2 rounded-lg smooth-transition ${viewMode === 'grid'
-                                            ? 'bg-white shadow-medium text-primary-600'
+                                    className={`p-2 rounded-lg smooth-transition ${
+                                        viewMode === 'grid' 
+                                            ? 'bg-white shadow-medium text-primary-600' 
                                             : 'text-neutral-500 hover:text-neutral-700'
-                                        }`}
+                                    }`}
                                 >
                                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
@@ -146,10 +147,11 @@ export default function CategoryPage() {
                                 </button>
                                 <button
                                     onClick={() => setViewMode('list')}
-                                    className={`p-2 rounded-lg smooth-transition ${viewMode === 'list'
-                                            ? 'bg-white shadow-medium text-primary-600'
+                                    className={`p-2 rounded-lg smooth-transition ${
+                                        viewMode === 'list' 
+                                            ? 'bg-white shadow-medium text-primary-600' 
                                             : 'text-neutral-500 hover:text-neutral-700'
-                                        }`}
+                                    }`}
                                 >
                                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 10h16M4 14h16M4 18h16" />
@@ -280,10 +282,11 @@ export default function CategoryPage() {
                 ) : (
                     <>
                         {/* Products Grid/List */}
-                        <div className={`animate-fade-in-up ${viewMode === 'grid'
-                                ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6'
+                        <div className={`animate-fade-in-up ${
+                            viewMode === 'grid' 
+                                ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6' 
                                 : 'space-y-4'
-                            }`}>
+                        }`}>
                             {filteredResults.map((product, index) => (
                                 viewMode === 'grid' ? (
                                     <div key={product.unique_id} className="animate-fade-in-up" style={{ animationDelay: `${index * 50}ms` }}>
@@ -302,8 +305,8 @@ export default function CategoryPage() {
                                     <div key={product.unique_id} className="glassmorphism bg-white/70 backdrop-blur-xl rounded-2xl shadow-large border border-white/50 p-6 animate-fade-in-up" style={{ animationDelay: `${index * 50}ms` }}>
                                         <div className="flex flex-col md:flex-row gap-6">
                                             <div className="md:w-48 md:h-48 w-full h-64">
-                                                <img
-                                                    src={product.image}
+                                                <img 
+                                                    src={product.image} 
                                                     alt={product.name}
                                                     className="w-full h-full object-contain rounded-xl bg-white"
                                                 />
@@ -362,23 +365,24 @@ export default function CategoryPage() {
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                                             </svg>
                                         </button>
-
+                                        
                                         {[...Array(numberOfPages)].map((_, index) => {
                                             const pageNum = index + 1;
                                             return (
                                                 <button
                                                     key={pageNum}
                                                     onClick={() => handlePageChange(pageNum)}
-                                                    className={`px-4 py-2 rounded-lg smooth-transition ${currentPage === pageNum
+                                                    className={`px-4 py-2 rounded-lg smooth-transition ${
+                                                        currentPage === pageNum
                                                             ? 'bg-gradient-to-r from-primary-500 to-accent-500 text-white shadow-medium'
                                                             : 'hover:bg-primary-50 text-neutral-700'
-                                                        }`}
+                                                    }`}
                                                 >
                                                     {pageNum}
                                                 </button>
                                             );
                                         })}
-
+                                        
                                         <button
                                             onClick={() => handlePageChange(currentPage + 1)}
                                             disabled={currentPage === numberOfPages}

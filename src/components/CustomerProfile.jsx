@@ -1,23 +1,144 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
+import axios from 'axios';
+import { AuthenticationContext } from '../context/AuthenticationContext';
 
 export default function CustomerProfile() {
+    const { isAuthenticated } = useContext(AuthenticationContext);
     const [isEditing, setIsEditing] = useState(false);
+    const [loading, setLoading] = useState(true);
+    const [saving, setSaving] = useState(false);
+    const [error, setError] = useState('');
+    const [success, setSuccess] = useState('');
+    const API_URL = process.env.REACT_APP_API_URL;
+
     const [profileData, setProfileData] = useState({
-        name: 'John Doe',
-        email: 'john.doe@example.com',
-        phone: '+1 (555) 123-4567',
-        address: '123 Main Street, City, State 12345',
-        birthdate: '1995-06-15'
+        first_name: '',
+        last_name: '',
+        email: '',
+        mobile_number: '',
+        address: {
+            address: '',
+            address_name: '',
+            city: '',
+            state: '',
+            pincode: ''
+        }
     });
 
+    const [originalData, setOriginalData] = useState({});
+
+    useEffect(() => {
+        if (isAuthenticated) {
+            fetchProfileData();
+        }
+    }, [isAuthenticated]);
+
+    const fetchProfileData = async () => {
+        try {
+            setLoading(true);
+            const response = await axios.get(`${API_URL}/api/get-profile-details/`, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
+                },
+            });
+
+            setProfileData(response.data);
+            setOriginalData(response.data);
+        } catch (error) {
+            console.error('Error fetching profile:', error);
+            setError('Failed to load profile data');
+        } finally {
+            setLoading(false);
+        }
+    };
+
     const handleEdit = () => {
+        if (isEditing) {
+            // Cancel editing - restore original data
+            setProfileData(originalData);
+            setError('');
+            setSuccess('');
+        }
         setIsEditing(!isEditing);
     };
 
-    const handleSave = () => {
-        setIsEditing(false);
-        // Handle save logic here
+    const handleSave = async () => {
+        try {
+            setSaving(true);
+            setError('');
+            setSuccess('');
+
+            const updateData = {
+                first_name: profileData.first_name,
+                last_name: profileData.last_name,
+                email: profileData.email,
+                mobile_number: profileData.mobile_number,
+                address: profileData.address
+            };
+
+            const response = await axios.patch(`${API_URL}/api/update-profile/`, updateData, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (response.data.success) {
+                setOriginalData(profileData);
+                setIsEditing(false);
+                setSuccess('Profile updated successfully!');
+                setTimeout(() => setSuccess(''), 5000);
+            } else {
+                setError(response.data.message || 'Failed to update profile');
+            }
+        } catch (error) {
+            console.error('Error updating profile:', error);
+            setError(error.response?.data?.message || 'Failed to update profile');
+        } finally {
+            setSaving(false);
+        }
     };
+
+    const handleInputChange = (field, value) => {
+        setProfileData(prev => ({
+            ...prev,
+            [field]: value
+        }));
+    };
+
+    const handleAddressChange = (field, value) => {
+        setProfileData(prev => ({
+            ...prev,
+            address: {
+                ...prev.address,
+                [field]: value
+            }
+        }));
+    };
+
+    if (!isAuthenticated) {
+        return (
+            <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-accent-50 px-4 py-8 flex items-center justify-center">
+                <div className="text-center">
+                    <h2 className="text-2xl font-bold text-neutral-700 mb-4">Please sign in to view your profile</h2>
+                    <a href="/sign-in" className="text-primary-600 hover:text-primary-700 font-medium">
+                        Go to Sign In →
+                    </a>
+                </div>
+            </div>
+        );
+    }
+
+    if (loading) {
+        return (
+            <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-accent-50 px-4 py-8 flex items-center justify-center">
+                <div className="text-center">
+                    <div className="animate-spin w-16 h-16 border-4 border-primary-200 border-t-primary-500 rounded-full mx-auto mb-4"></div>
+                    <p className="text-lg text-neutral-600">Loading your profile...</p>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-accent-50 px-4 py-8">
@@ -35,6 +156,18 @@ export default function CustomerProfile() {
                     </p>
                 </div>
 
+                {/* Success/Error Messages */}
+                {success && (
+                    <div className="mb-6 p-4 bg-success-50 border border-success-200 text-success-700 rounded-xl">
+                        {success}
+                    </div>
+                )}
+                {error && (
+                    <div className="mb-6 p-4 bg-error-50 border border-error-200 text-error-700 rounded-xl">
+                        {error}
+                    </div>
+                )}
+
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
 
                     {/* Profile Avatar & Summary */}
@@ -45,7 +178,9 @@ export default function CustomerProfile() {
                             <div className="text-center mb-6">
                                 <div className="relative inline-block">
                                     <div className="w-24 h-24 bg-gradient-to-r from-primary-500 to-accent-500 rounded-full flex items-center justify-center text-white text-3xl font-bold shadow-glow-purple">
-                                        {profileData.name.split(' ').map(n => n[0]).join('')}
+                                        {profileData.first_name && profileData.last_name
+                                            ? `${profileData.first_name[0]}${profileData.last_name[0]}`
+                                            : 'U'}
                                     </div>
                                     <button className="absolute -bottom-1 -right-1 w-8 h-8 bg-white rounded-full border-2 border-primary-500 flex items-center justify-center text-primary-500 hover:bg-primary-50 smooth-transition">
                                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -54,23 +189,25 @@ export default function CustomerProfile() {
                                         </svg>
                                     </button>
                                 </div>
-                                <h2 className="text-xl font-bold text-neutral-800 mt-4">{profileData.name}</h2>
-                                <p className="text-neutral-600">Customer since 2023</p>
+                                <h2 className="text-xl font-bold text-neutral-800 mt-4">
+                                    {profileData.first_name} {profileData.last_name}
+                                </h2>
+                                <p className="text-neutral-600">Customer since 2024</p>
                             </div>
 
                             {/* Quick Stats */}
                             <div className="space-y-4">
                                 <div className="flex items-center justify-between p-3 bg-gradient-to-r from-primary-50 to-accent-50 rounded-xl">
                                     <span className="text-neutral-600">Total Orders</span>
-                                    <span className="font-bold text-primary-600">24</span>
+                                    <span className="font-bold text-primary-600">--</span>
                                 </div>
                                 <div className="flex items-center justify-between p-3 bg-gradient-to-r from-accent-50 to-success-50 rounded-xl">
                                     <span className="text-neutral-600">Wishlist Items</span>
-                                    <span className="font-bold text-accent-600">12</span>
+                                    <span className="font-bold text-accent-600">--</span>
                                 </div>
                                 <div className="flex items-center justify-between p-3 bg-gradient-to-r from-success-50 to-primary-50 rounded-xl">
                                     <span className="text-neutral-600">Loyalty Points</span>
-                                    <span className="font-bold text-success-600">1,250</span>
+                                    <span className="font-bold text-success-600">--</span>
                                 </div>
                             </div>
                         </div>
@@ -97,15 +234,31 @@ export default function CustomerProfile() {
                             {/* Profile Form */}
                             <div className="space-y-6">
 
-                                {/* Full Name */}
+                                {/* First Name */}
                                 <div className="space-y-2">
-                                    <label className="text-sm font-semibold text-neutral-700">Full Name</label>
+                                    <label className="text-sm font-semibold text-neutral-700">First Name</label>
                                     <div className="relative">
                                         <input
                                             type="text"
-                                            value={profileData.name}
+                                            value={profileData.first_name}
                                             disabled={!isEditing}
-                                            onChange={(e) => setProfileData({ ...profileData, name: e.target.value })}
+                                            onChange={(e) => handleInputChange('first_name', e.target.value)}
+                                            className={`w-full px-4 py-3 glassmorphism bg-white/50 backdrop-blur-sm border border-neutral-200 rounded-xl outline-none smooth-transition text-neutral-700 ${isEditing ? 'focus:ring-2 focus:ring-primary-400 focus:border-primary-400' : 'cursor-not-allowed'
+                                                }`}
+                                        />
+                                        <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-primary-400/10 to-accent-400/10 opacity-0 focus-within:opacity-100 smooth-transition pointer-events-none" />
+                                    </div>
+                                </div>
+
+                                {/* Last Name */}
+                                <div className="space-y-2">
+                                    <label className="text-sm font-semibold text-neutral-700">Last Name</label>
+                                    <div className="relative">
+                                        <input
+                                            type="text"
+                                            value={profileData.last_name}
+                                            disabled={!isEditing}
+                                            onChange={(e) => handleInputChange('last_name', e.target.value)}
                                             className={`w-full px-4 py-3 glassmorphism bg-white/50 backdrop-blur-sm border border-neutral-200 rounded-xl outline-none smooth-transition text-neutral-700 ${isEditing ? 'focus:ring-2 focus:ring-primary-400 focus:border-primary-400' : 'cursor-not-allowed'
                                                 }`}
                                         />
@@ -121,7 +274,7 @@ export default function CustomerProfile() {
                                             type="email"
                                             value={profileData.email}
                                             disabled={!isEditing}
-                                            onChange={(e) => setProfileData({ ...profileData, email: e.target.value })}
+                                            onChange={(e) => handleInputChange('email', e.target.value)}
                                             className={`w-full px-4 py-3 glassmorphism bg-white/50 backdrop-blur-sm border border-neutral-200 rounded-xl outline-none smooth-transition text-neutral-700 ${isEditing ? 'focus:ring-2 focus:ring-primary-400 focus:border-primary-400' : 'cursor-not-allowed'
                                                 }`}
                                         />
@@ -129,15 +282,32 @@ export default function CustomerProfile() {
                                     </div>
                                 </div>
 
-                                {/* Phone */}
+                                {/* Mobile Number */}
                                 <div className="space-y-2">
-                                    <label className="text-sm font-semibold text-neutral-700">Phone Number</label>
+                                    <label className="text-sm font-semibold text-neutral-700">Mobile Number</label>
                                     <div className="relative">
                                         <input
                                             type="tel"
-                                            value={profileData.phone}
+                                            value={profileData.mobile_number}
                                             disabled={!isEditing}
-                                            onChange={(e) => setProfileData({ ...profileData, phone: e.target.value })}
+                                            onChange={(e) => handleInputChange('mobile_number', e.target.value)}
+                                            className={`w-full px-4 py-3 glassmorphism bg-white/50 backdrop-blur-sm border border-neutral-200 rounded-xl outline-none smooth-transition text-neutral-700 ${isEditing ? 'focus:ring-2 focus:ring-primary-400 focus:border-primary-400' : 'cursor-not-allowed'
+                                                }`}
+                                        />
+                                        <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-primary-400/10 to-accent-400/10 opacity-0 focus-within:opacity-100 smooth-transition pointer-events-none" />
+                                    </div>
+                                </div>
+
+                                {/* Address Name */}
+                                <div className="space-y-2">
+                                    <label className="text-sm font-semibold text-neutral-700">Address Name</label>
+                                    <div className="relative">
+                                        <input
+                                            type="text"
+                                            value={profileData.address?.address_name || ''}
+                                            disabled={!isEditing}
+                                            onChange={(e) => handleAddressChange('address_name', e.target.value)}
+                                            placeholder="e.g. Home, Office"
                                             className={`w-full px-4 py-3 glassmorphism bg-white/50 backdrop-blur-sm border border-neutral-200 rounded-xl outline-none smooth-transition text-neutral-700 ${isEditing ? 'focus:ring-2 focus:ring-primary-400 focus:border-primary-400' : 'cursor-not-allowed'
                                                 }`}
                                         />
@@ -147,12 +317,12 @@ export default function CustomerProfile() {
 
                                 {/* Address */}
                                 <div className="space-y-2">
-                                    <label className="text-sm font-semibold text-neutral-700">Address</label>
+                                    <label className="text-sm font-semibold text-neutral-700">Street Address</label>
                                     <div className="relative">
                                         <textarea
-                                            value={profileData.address}
+                                            value={profileData.address?.address || ''}
                                             disabled={!isEditing}
-                                            onChange={(e) => setProfileData({ ...profileData, address: e.target.value })}
+                                            onChange={(e) => handleAddressChange('address', e.target.value)}
                                             rows="3"
                                             className={`w-full px-4 py-3 glassmorphism bg-white/50 backdrop-blur-sm border border-neutral-200 rounded-xl outline-none smooth-transition text-neutral-700 resize-none ${isEditing ? 'focus:ring-2 focus:ring-primary-400 focus:border-primary-400' : 'cursor-not-allowed'
                                                 }`}
@@ -161,15 +331,48 @@ export default function CustomerProfile() {
                                     </div>
                                 </div>
 
-                                {/* Birth Date */}
+                                {/* City and State */}
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div className="space-y-2">
+                                        <label className="text-sm font-semibold text-neutral-700">City</label>
+                                        <div className="relative">
+                                            <input
+                                                type="text"
+                                                value={profileData.address?.city || ''}
+                                                disabled={!isEditing}
+                                                onChange={(e) => handleAddressChange('city', e.target.value)}
+                                                className={`w-full px-4 py-3 glassmorphism bg-white/50 backdrop-blur-sm border border-neutral-200 rounded-xl outline-none smooth-transition text-neutral-700 ${isEditing ? 'focus:ring-2 focus:ring-primary-400 focus:border-primary-400' : 'cursor-not-allowed'
+                                                    }`}
+                                            />
+                                            <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-primary-400/10 to-accent-400/10 opacity-0 focus-within:opacity-100 smooth-transition pointer-events-none" />
+                                        </div>
+                                    </div>
+
+                                    <div className="space-y-2">
+                                        <label className="text-sm font-semibold text-neutral-700">State</label>
+                                        <div className="relative">
+                                            <input
+                                                type="text"
+                                                value={profileData.address?.state || ''}
+                                                disabled={!isEditing}
+                                                onChange={(e) => handleAddressChange('state', e.target.value)}
+                                                className={`w-full px-4 py-3 glassmorphism bg-white/50 backdrop-blur-sm border border-neutral-200 rounded-xl outline-none smooth-transition text-neutral-700 ${isEditing ? 'focus:ring-2 focus:ring-primary-400 focus:border-primary-400' : 'cursor-not-allowed'
+                                                    }`}
+                                            />
+                                            <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-primary-400/10 to-accent-400/10 opacity-0 focus-within:opacity-100 smooth-transition pointer-events-none" />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* PIN Code */}
                                 <div className="space-y-2">
-                                    <label className="text-sm font-semibold text-neutral-700">Birth Date</label>
+                                    <label className="text-sm font-semibold text-neutral-700">PIN Code</label>
                                     <div className="relative">
                                         <input
-                                            type="date"
-                                            value={profileData.birthdate}
+                                            type="text"
+                                            value={profileData.address?.pincode || ''}
                                             disabled={!isEditing}
-                                            onChange={(e) => setProfileData({ ...profileData, birthdate: e.target.value })}
+                                            onChange={(e) => handleAddressChange('pincode', e.target.value)}
                                             className={`w-full px-4 py-3 glassmorphism bg-white/50 backdrop-blur-sm border border-neutral-200 rounded-xl outline-none smooth-transition text-neutral-700 ${isEditing ? 'focus:ring-2 focus:ring-primary-400 focus:border-primary-400' : 'cursor-not-allowed'
                                                 }`}
                                         />
@@ -177,18 +380,23 @@ export default function CustomerProfile() {
                                     </div>
                                 </div>
 
-                                {/* Save Button */}
+                                {/* Save/Cancel Buttons */}
                                 {isEditing && (
                                     <div className="flex gap-4 pt-4">
                                         <button
                                             onClick={handleSave}
-                                            className="flex-1 py-3 bg-gradient-to-r from-success-500 to-primary-500 text-white font-semibold rounded-xl shadow-medium hover:shadow-glow-green smooth-transition hover:scale-[1.02] active:scale-[0.98]"
+                                            disabled={saving}
+                                            className={`flex-1 py-3 font-semibold rounded-xl shadow-medium smooth-transition hover:scale-[1.02] active:scale-[0.98] ${saving
+                                                    ? 'bg-neutral-400 text-neutral-600 cursor-not-allowed'
+                                                    : 'bg-gradient-to-r from-success-500 to-primary-500 text-white hover:shadow-glow-green'
+                                                }`}
                                         >
-                                            Save Changes
+                                            {saving ? 'Saving...' : 'Save Changes'}
                                         </button>
                                         <button
-                                            onClick={() => setIsEditing(false)}
-                                            className="px-6 py-3 bg-neutral-200 text-neutral-700 font-semibold rounded-xl hover:bg-neutral-300 smooth-transition hover:scale-[1.02] active:scale-[0.98]"
+                                            onClick={handleEdit}
+                                            disabled={saving}
+                                            className="px-6 py-3 bg-neutral-200 text-neutral-700 font-semibold rounded-xl hover:bg-neutral-300 smooth-transition hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50"
                                         >
                                             Cancel
                                         </button>

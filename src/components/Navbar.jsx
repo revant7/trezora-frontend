@@ -136,6 +136,7 @@ export default function Navbar() {
 
     const handleSearch = async (e) => {
         if ((e.key === "Enter" || e.type === "click") && query.trim() !== "") {
+            setSuggestions([]); // Clear suggestions when searching
             navigate(`/search?q=${encodeURIComponent(query)}`);
         }
     }
@@ -149,29 +150,29 @@ export default function Navbar() {
                 <div className="absolute inset-0 backdrop-blur-sm bg-black/10"></div>
 
                 {/* Content */}
-                <div className="relative flex items-center justify-between px-4 py-2">
+                <div className="relative flex items-center justify-between px-4 py-1 sm:py-2">
 
                     {/* Left Section - Logo */}
                     <div className="flex items-center group">
                         <div className="relative">
                             {/* Logo glow effect */}
-                            <div className="absolute inset-0 bg-white/20 rounded-2xl blur-lg opacity-0 group-hover:opacity-100 smooth-transition scale-110"></div>
+                            <div className="absolute inset-0 bg-white/20 rounded-xl blur-lg opacity-0 group-hover:opacity-100 smooth-transition scale-110"></div>
 
                             {/* Logo container */}
-                            <div className="relative flex items-center gap-3 px-4 py-2 rounded-2xl bg-white/10 backdrop-blur-sm border border-white/20 hover:bg-white/20 smooth-transition">
+                            <div className="relative flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white/10 backdrop-blur-sm border border-white/20 hover:bg-white/20 smooth-transition">
                                 <div className="flex items-center gap-1">
-                                    <span className="text-2xl font-black text-white tracking-tight">Trez</span>
+                                    <span className="text-xl font-black text-white tracking-tight">Trez</span>
                                     <div className="relative">
                                         <img
-                                            className="w-8 h-8 drop-shadow-lg transition-transform duration-500 group-hover:rotate-[360deg]"
+                                            className="w-6 h-6 drop-shadow-lg transition-transform duration-500 group-hover:rotate-[360deg]"
                                             src="/images/finalshoplogo.ico"
                                             alt="logo"
                                         />
                                         <div className="absolute inset-0 bg-accent-300/30 rounded-full blur-md opacity-0 group-hover:opacity-100 smooth-transition"></div>
                                     </div>
-                                    <span className="text-2xl font-black text-white tracking-tight">ra</span>
+                                    <span className="text-xl font-black text-white tracking-tight">ra</span>
                                 </div>
-                                <div className="hidden md:block w-px h-6 bg-white/30"></div>
+                                <div className="hidden md:block w-px h-4 bg-white/30"></div>
                                 <div className="hidden md:flex flex-col">
                                     <span className="text-xs font-semibold text-white/90 leading-none">Modern</span>
                                     <span className="text-xs font-semibold text-accent-200 leading-none">Shopping</span>
@@ -197,7 +198,7 @@ export default function Navbar() {
                                     {/* Input */}
                                     <input
                                         type="text"
-                                        className="flex-1 py-2 sm:py-3 md:py-4 pr-2 sm:pr-3 md:pr-4 text-sm sm:text-base font-medium text-neutral-700 placeholder-neutral-400 bg-transparent focus:outline-none"
+                                        className="flex-1 py-2 sm:py-2.5 md:py-3 pr-2 sm:pr-3 md:pr-4 text-sm sm:text-base font-medium text-neutral-700 placeholder-neutral-400 bg-transparent focus:outline-none"
                                         placeholder="Search products..."
                                         value={query}
                                         onChange={handleSearchInputChange}
@@ -222,7 +223,11 @@ export default function Navbar() {
                                         <button
                                             key={index}
                                             className="w-full text-left px-6 py-3 text-neutral-700 hover:bg-gradient-to-r hover:from-primary-50 hover:to-accent-50 smooth-transition border-b border-neutral-50 last:border-b-0"
-                                            onClick={() => setQuery(suggestion)}
+                                            onClick={() => {
+                                                setQuery(suggestion);
+                                                setSuggestions([]);
+                                                navigate(`/search?q=${encodeURIComponent(suggestion)}`);
+                                            }}
                                         >
                                             <div className="flex items-center gap-3">
                                                 <Search className="w-4 h-4 text-neutral-400" />
@@ -249,27 +254,27 @@ export default function Navbar() {
 
                         {/* Profile Actions */}
                         {isAuthenticated && (
-                            <div className="flex items-center gap-2">
+                            <div className="flex items-center gap-1">
                                 <button
                                     onClick={handleProfileClick}
-                                    className="p-3 rounded-xl bg-success-500/20 text-success-200 hover:bg-success-500/30 hover:text-success-100 smooth-transition hover:scale-110"
+                                    className="p-2 rounded-lg bg-success-500/20 text-success-200 hover:bg-success-500/30 hover:text-success-100 smooth-transition hover:scale-110"
                                 >
-                                    <User className="w-5 h-5" />
+                                    <User className="w-4 h-4" />
                                 </button>
                                 <button
                                     onClick={handleLogout}
-                                    className="p-3 rounded-xl bg-error-500/20 text-error-200 hover:bg-error-500/30 hover:text-error-100 smooth-transition hover:scale-110"
+                                    className="p-2 rounded-lg bg-error-500/20 text-error-200 hover:bg-error-500/30 hover:text-error-100 smooth-transition hover:scale-110"
                                 >
-                                    <LogOut className="w-5 h-5" />
+                                    <LogOut className="w-4 h-4" />
                                 </button>
                             </div>
                         )}
 
                         {/* Cart */}
-                        <Link to="/cart" className="relative group ml-3">
-                            <div className="p-3 rounded-xl bg-white/20 hover:bg-white/30 smooth-transition hover:scale-110 border border-white/30">
+                        <Link to="/cart" className="relative group ml-2">
+                            <div className="p-2 rounded-lg bg-white/20 hover:bg-white/30 smooth-transition hover:scale-110 border border-white/30">
                                 <svg
-                                    className="w-6 h-6 text-white group-hover:text-accent-200 smooth-transition"
+                                    className="w-5 h-5 text-white group-hover:text-accent-200 smooth-transition"
                                     fill="none"
                                     stroke="currentColor"
                                     viewBox="0 0 24 24"
@@ -282,7 +287,7 @@ export default function Navbar() {
                                     />
                                 </svg>
                                 {cartCount > 0 && (
-                                    <span className="absolute -top-2 -right-2 bg-gradient-to-r from-accent-500 to-accent-600 text-white text-xs font-bold rounded-full w-6 h-6 flex items-center justify-center shadow-lg animate-pulse border-2 border-white z-10">
+                                    <span className="absolute -top-1 -right-1 bg-gradient-to-r from-accent-500 to-accent-600 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center shadow-lg animate-pulse border-2 border-white z-10">
                                         {cartCount}
                                     </span>
                                 )}
@@ -293,33 +298,88 @@ export default function Navbar() {
             </nav>
 
             {/* Secondary Navigation Bar */}
-            <div className="bg-white border-b border-neutral-200 shadow-sm">
-                <div className="px-4 sm:px-6 py-2 sm:py-3">
-                    <div className="flex items-center justify-between">
+            <div className="bg-gradient-to-r from-white via-neutral-50 to-white border-b border-neutral-200/50 shadow-soft backdrop-blur-sm overflow-hidden">
+                <div className="px-4 sm:px-6 py-2">
+                    <div className="flex items-center justify-between overflow-hidden">
 
                         {/* Navigation Links */}
-                        <div className="flex items-center gap-1 overflow-x-auto scrollbar-hide">
-                            {navComponents.map((item, index) => (
-                                <Link
-                                    key={item}
-                                    to={item === "Home" ? "/" : `/${item.replace(" ", "-").toLowerCase()}`}
-                                    className={`flex-shrink-0 px-2 sm:px-3 md:px-4 py-1 sm:py-2 text-xs sm:text-sm font-medium rounded-lg smooth-transition ${getActiveLinkClass(item)}`}
-                                >
-                                    {item}
-                                </Link>
-                            ))}
+                        <div className="flex items-center gap-2 flex-shrink-0 overflow-hidden">
+                            {navComponents.map((item, index) => {
+                                const path = item === "Home" ? "/" : `/${item.replace(" ", "-").toLowerCase()}`;
+                                const isActive = location.pathname === path;
+
+                                return (
+                                    <Link
+                                        key={item}
+                                        to={path}
+                                        className={`relative flex-shrink-0 px-4 sm:px-5 md:px-6 py-2 sm:py-3 text-sm sm:text-base font-semibold rounded-xl smooth-transition group ${isActive
+                                            ? "bg-gradient-to-r from-primary-500 to-accent-500 text-white shadow-medium"
+                                            : "text-neutral-700 hover:text-primary-600 hover:bg-gradient-to-r hover:from-primary-50 hover:to-accent-50 hover:shadow-soft"
+                                            }`}
+                                    >
+                                        {/* Background glow effect for active items */}
+                                        {isActive && (
+                                            <div className="absolute inset-0 bg-gradient-to-r from-primary-400 to-accent-400 rounded-xl blur-md opacity-30 -z-10 group-hover:opacity-50 smooth-transition"></div>
+                                        )}
+
+                                        {/* Icon for each nav item */}
+                                        <span className="flex items-center gap-2">
+                                            {item === "Home" && (
+                                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                                                </svg>
+                                            )}
+                                            {item === "Today's Deals" && (
+                                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                                </svg>
+                                            )}
+                                            {item === "Orders" && (
+                                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                                                </svg>
+                                            )}
+                                            {item === "Wish List" && (
+                                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                                                </svg>
+                                            )}
+                                            {item === "Contact Us" && (
+                                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                                                </svg>
+                                            )}
+                                            {item === "Sign In" && (
+                                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
+                                                </svg>
+                                            )}
+                                            <span>{item}</span>
+                                        </span>
+
+                                        {/* Underline animation for non-active items */}
+                                        {!isActive && (
+                                            <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-0 h-0.5 bg-gradient-to-r from-primary-500 to-accent-500 group-hover:w-3/4 smooth-transition duration-300"></div>
+                                        )}
+                                    </Link>
+                                );
+                            })}
                         </div>
 
-                        {/* Quick Actions */}
-                        <div className="hidden lg:flex items-center gap-4 text-xs text-neutral-600">
-                            <span className="flex items-center gap-1">
-                                <div className="w-2 h-2 bg-success-400 rounded-full"></div>
-                                Free Shipping $50+
-                            </span>
-                            <span className="flex items-center gap-1">
-                                <div className="w-2 h-2 bg-accent-400 rounded-full"></div>
-                                24/7 Support
-                            </span>
+                        {/* Enhanced Quick Actions */}
+                        <div className="hidden lg:flex items-center gap-6 text-sm">
+                            <div className="flex items-center gap-2 px-3 py-2 bg-gradient-to-r from-success-50 to-emerald-50 rounded-lg border border-success-200/50">
+                                <div className="w-3 h-3 bg-gradient-to-r from-success-400 to-emerald-400 rounded-full shadow-sm animate-pulse"></div>
+                                <span className="font-semibold text-success-700">Free Shipping $50+</span>
+                            </div>
+                            <div className="flex items-center gap-2 px-3 py-2 bg-gradient-to-r from-accent-50 to-primary-50 rounded-lg border border-accent-200/50">
+                                <div className="w-3 h-3 bg-gradient-to-r from-accent-400 to-primary-400 rounded-full shadow-sm animate-pulse"></div>
+                                <span className="font-semibold text-accent-700">24/7 Support</span>
+                            </div>
+                            <div className="flex items-center gap-2 px-3 py-2 bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg border border-purple-200/50">
+                                <div className="w-3 h-3 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full shadow-sm animate-pulse"></div>
+                                <span className="font-semibold text-purple-700">Easy Returns</span>
+                            </div>
                         </div>
                     </div>
                 </div>

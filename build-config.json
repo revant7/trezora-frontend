@@ -1,0 +1,10 @@
+{
+  "name": "build-optimizer",
+  "version": "1.0.0",
+  "scripts": {
+    "analyze": "npm run build && npx webpack-bundle-analyzer build/static/js/*.js",
+    "build:prod": "NODE_ENV=production npm run build",
+    "prebuild": "echo 'Starting production build...'",
+    "postbuild": "echo 'Build completed! Ready for deployment.'"
+  }
+}

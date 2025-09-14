@@ -4,9 +4,7 @@ import axios from 'axios';
 import ItemCard from './ItemCard';
 import PageFooter from './PageFooter';
 
-
 export default function SearchResults() {
-
     const location = useLocation();
     const searchParams = new URLSearchParams(location.search);
     const query = searchParams.get('q');
@@ -24,7 +22,7 @@ export default function SearchResults() {
     });
     const [showFilters, setShowFilters] = useState(false);
 
-    // Categories for filter dropdown (you can make this dynamic by fetching from API)
+    // Categories for filter dropdown
     const categories = [
         'Electronics', 'Fashion', 'Home & Garden', 'Sports', 'Books',
         'Beauty & Personal Care', 'Automotive', 'Health & Wellness'
@@ -85,7 +83,7 @@ export default function SearchResults() {
             ...prev,
             [filterType]: value
         }));
-        setCurrentPage(1); // Reset to first page when filters change
+        setCurrentPage(1);
     };
 
     const handlePriceRangeChange = (type, value) => {
@@ -145,7 +143,6 @@ export default function SearchResults() {
             </div>
         );
     }
-
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-white via-neutral-50 to-primary-50/30 p-6">
@@ -308,9 +305,12 @@ export default function SearchResults() {
                                     <ItemCard
                                         unique_id={item.unique_id}
                                         image={item.image}
-                                        product_category={item.product_category[0]}
+                                        product_category={item.product_category && item.product_category[0]}
                                         name={item.name}
+                                        brand={item.brand}
                                         price={item.price}
+                                        mrp={item.mrp}
+                                        product_rating={item.product_rating}
                                     />
                                 </div>
                             ))}

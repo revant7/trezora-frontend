@@ -23,7 +23,7 @@ export default function Category() {
 
     return (
         <div className="w-full px-4 sm:px-6 lg:px-8 my-6">
-            <div className="relative max-w-7xl mx-auto h-[40vh] sm:h-[45vh] md:h-[50vh] lg:h-[55vh] overflow-hidden rounded-2xl shadow-lg">
+            <div className="relative max-w-7xl mx-auto h-[25vh] sm:h-[30vh] md:h-[35vh] lg:h-[40vh] overflow-hidden rounded-2xl shadow-lg">
                 {/* Background gradient overlay */}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent z-10" />
 
@@ -41,7 +41,7 @@ export default function Category() {
                                 <img
                                     src={`/images/${item}`}
                                     alt={item}
-                                    className="object-contain w-fit h-fit bg-neutral-100"
+                                    className="w-fit h-fit object-cover bg-neutral-100"
                                 />
                                 {/* Individual image overlay */}
                                 <div className="absolute inset-0 bg-gradient-to-br from-primary-600/10 to-accent-600/10" />

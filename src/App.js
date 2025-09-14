@@ -30,7 +30,7 @@ function App() {
       <AuthenticationProvider>
         <UpdateCartCountProvider>
           <div className="flex flex-col min-h-screen">
-            <div className="flex-grow pt-24">
+            <div className="flex-grow pt-28">
               <Routes>
                 <Route exact path="/sign-in" element={<><Navbar /> <SignIn /></>}></Route>
                 <Route exact path="/create-account" element={<><Navbar /> <CreateAccount /></>}></Route>

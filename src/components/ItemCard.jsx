@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { useContext, useState, useEffect } from 'react'
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import UpdateCartCountContext from "../context/UpdateCartCount";
@@ -7,25 +7,83 @@ export default function ItemCard({ unique_id, name, brand, price, mrp, product_c
     const API_URL = process.env.REACT_APP_API_URL;
     const navigate = useNavigate();
     const { setCartCount } = useContext(UpdateCartCountContext);
+    const [isInWishlist, setIsInWishlist] = useState(false);
+    const [wishlistLoading, setWishlistLoading] = useState(false);
+
+    // Check if product is in wishlist on component mount
+    useEffect(() => {
+        checkWishlistStatus();
+    }, [unique_id]);
+
+    const checkWishlistStatus = async () => {
+        const user = localStorage.getItem('accessToken');
+        if (user) {
+            try {
+                const response = await axios.get(`${API_URL}/api/get-wishlist/`, {
+                    headers: { Authorization: `Bearer ${user}` }
+                });
+                const wishlistItems = response.data;
+                const isProductInWishlist = wishlistItems.some(item => item.product.unique_id === unique_id);
+                setIsInWishlist(isProductInWishlist);
+            } catch (error) {
+                console.error('Error checking wishlist status:', error);
+            }
+        }
+    };
+
     const addToCart = async (unique_id) => {
         const user = localStorage.getItem('accessToken');
         if (!user) {
             navigate('/sign-in', { replace: true })
         } else {
-            const data = {
-                unique_id: unique_id,
-                quantity: 1,
-            }
-            const response = await axios.post(`${API_URL}/api/add-item-to-cart/`, data, { headers: { Authorization: `Bearer ${user}` } })
-            const response1 = await axios.get(`${API_URL}/api/get-cart-items/`, {
-                headers: {
-                    Authorization: `Bearer ${user}`
+            try {
+                const data = {
+                    unique_id: unique_id,
+                    quantity: 1,
                 }
-            });
-            setCartCount(response1.data.length);
+                await axios.post(`${API_URL}/api/add-item-to-cart/`, data, { headers: { Authorization: `Bearer ${user}` } })
+                const response1 = await axios.get(`${API_URL}/api/get-cart-items/`, {
+                    headers: {
+                        Authorization: `Bearer ${user}`
+                    }
+                });
+                setCartCount(response1.data.length);
+            } catch (error) {
+                console.error('Error adding to cart:', error);
+            }
+        }
+    };
 
+    const toggleWishlist = async (e) => {
+        e.stopPropagation(); // Prevent navigation to product page
+        const user = localStorage.getItem('accessToken');
+        if (!user) {
+            navigate('/sign-in', { replace: true });
+            return;
         }
 
+        setWishlistLoading(true);
+        try {
+            if (isInWishlist) {
+                // Remove from wishlist
+                await axios.delete(`${API_URL}/api/remove-from-wishlist/`, {
+                    headers: { Authorization: `Bearer ${user}` },
+                    data: { unique_id: unique_id }
+                });
+                setIsInWishlist(false);
+            } else {
+                // Add to wishlist
+                await axios.post(`${API_URL}/api/add-to-wishlist/`,
+                    { unique_id: unique_id },
+                    { headers: { Authorization: `Bearer ${user}` } }
+                );
+                setIsInWishlist(true);
+            }
+        } catch (error) {
+            console.error('Error toggling wishlist:', error);
+        } finally {
+            setWishlistLoading(false);
+        }
     };
 
     const goToProductPage = (unique_id) => { navigate(`/product/${unique_id}`) };
@@ -56,6 +114,37 @@ export default function ItemCard({ unique_id, name, brand, price, mrp, product_c
                     </svg>
                     <span className="text-xs font-semibold text-neutral-700">{product_rating}</span>
                 </div>
+
+                {/* Wishlist Button */}
+                <button
+                    onClick={toggleWishlist}
+                    disabled={wishlistLoading}
+                    className={`absolute bottom-3 right-3 p-2 rounded-full shadow-medium smooth-transition backdrop-blur-sm ${isInWishlist
+                        ? 'bg-red-500 text-white hover:bg-red-600'
+                        : 'bg-white/90 text-neutral-600 hover:bg-red-50 hover:text-red-500'
+                        } ${wishlistLoading ? 'opacity-50 cursor-not-allowed' : 'hover:scale-110'}`}
+                >
+                    {wishlistLoading ? (
+                        <svg className="w-4 h-4 animate-spin" viewBox="0 0 24 24">
+                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                        </svg>
+                    ) : (
+                        <svg
+                            className={`w-4 h-4 smooth-transition ${isInWishlist ? 'scale-110' : ''}`}
+                            fill={isInWishlist ? "currentColor" : "none"}
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                        >
+                            <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={isInWishlist ? 0 : 2}
+                                d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"
+                            />
+                        </svg>
+                    )}
+                </button>
             </div>
 
             {/* Content Container */}

@@ -50,7 +50,7 @@ const Cart = () => {
         fetchData();
     }, [fetchData])
     return (
-        <div className="min-h-screen bg-gradient-to-br from-white via-neutral-50 to-primary-50/30 p-6">
+        <div className="min-h-screen bg-gradient-to-br from-white via-neutral-50 to-primary-50/30 p-6 pt-12">
             <div className="max-w-6xl mx-auto">
 
                 {/* Header */}
