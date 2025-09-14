@@ -64,31 +64,107 @@ export default function SignIn() {
 
 
     return (
-        <>
-            <div className='flex items-center justify-center'>
-                <div className="flex justify-center items-center bg-white p-8 rounded-2xl shadow-lg w-96">
-                    <form className="flex flex-col space-y-4" onSubmit={handleSubmit}>
-                        <h2 className="text-2xl font-bold text-center text-gray-800">Sign In</h2>
-                        <input type="email" placeholder="Email" name="email" id="email" required value={formData.email} onChange={handleChange}
-                            className="p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" />
-                        <input type="password" placeholder="Password" name="password" required value={formData.password} onChange={handleChange}
-                            className="p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" />
-                        <button type="submit" className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 rounded-lg transition" disabled={loading} >
-                            {loading ? "Signing In..." : "Sign In"}
+        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary-50 via-white to-accent-50 px-4 py-12">
+            {/* Background decorative elements */}
+            <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-gradient-to-r from-primary-200 to-accent-200 rounded-full blur-3xl opacity-20 animate-float" />
+            <div className="absolute bottom-1/4 right-1/4 w-48 h-48 bg-gradient-to-r from-accent-200 to-primary-200 rounded-full blur-2xl opacity-30 animate-float" style={{ animationDelay: '2s' }} />
+
+            <div className="relative w-full max-w-md">
+                {/* Glassmorphism container */}
+                <div className="glassmorphism bg-white/70 backdrop-blur-xl p-8 rounded-3xl shadow-large border border-white/50 animate-fade-in-up">
+
+                    {/* Header */}
+                    <div className="text-center mb-8">
+                        <h2 className="text-3xl font-bold gradient-text mb-2">Welcome Back</h2>
+                        <p className="text-neutral-600">Sign in to continue your shopping journey</p>
+                    </div>
+
+                    <form className="space-y-6" onSubmit={handleSubmit}>
+                        {/* Email Input */}
+                        <div className="space-y-2">
+                            <label className="text-sm font-semibold text-neutral-700" htmlFor="email">
+                                Email Address
+                            </label>
+                            <div className="relative">
+                                <input
+                                    type="email"
+                                    placeholder="Enter your email"
+                                    name="email"
+                                    id="email"
+                                    required
+                                    value={formData.email}
+                                    onChange={handleChange}
+                                    className="w-full px-4 py-3 glassmorphism bg-white/50 backdrop-blur-sm border border-neutral-200 rounded-xl focus:ring-2 focus:ring-primary-400 focus:border-primary-400 outline-none smooth-transition placeholder-neutral-400 text-neutral-700"
+                                />
+                                <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-primary-400/10 to-accent-400/10 opacity-0 focus-within:opacity-100 smooth-transition pointer-events-none" />
+                            </div>
+                        </div>
+
+                        {/* Password Input */}
+                        <div className="space-y-2">
+                            <label className="text-sm font-semibold text-neutral-700" htmlFor="password">
+                                Password
+                            </label>
+                            <div className="relative">
+                                <input
+                                    type="password"
+                                    placeholder="Enter your password"
+                                    name="password"
+                                    required
+                                    value={formData.password}
+                                    onChange={handleChange}
+                                    className="w-full px-4 py-3 glassmorphism bg-white/50 backdrop-blur-sm border border-neutral-200 rounded-xl focus:ring-2 focus:ring-primary-400 focus:border-primary-400 outline-none smooth-transition placeholder-neutral-400 text-neutral-700"
+                                />
+                                <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-primary-400/10 to-accent-400/10 opacity-0 focus-within:opacity-100 smooth-transition pointer-events-none" />
+                            </div>
+                        </div>
+
+                        {/* Submit Button */}
+                        <button
+                            type="submit"
+                            className="w-full py-3 bg-gradient-to-r from-primary-500 to-accent-500 text-white font-semibold rounded-xl shadow-medium hover:shadow-glow-purple smooth-transition hover:scale-[1.02] active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-primary-300 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                            disabled={loading}
+                        >
+                            <span className="flex items-center justify-center gap-2">
+                                {loading ? (
+                                    <>
+                                        <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
+                                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+                                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                                        </svg>
+                                        Signing In...
+                                    </>
+                                ) : (
+                                    "Sign In"
+                                )}
+                            </span>
                         </button>
-                        <p className="text-gray-600">
-                            Don't have an account?
-                            <Link to={"/create-account"}><span className="text-blue-500 hover:underline font-medium">Create Account</span></Link>
-                        </p>
+
+                        {/* Create Account Link */}
+                        <div className="text-center pt-4">
+                            <p className="text-neutral-600">
+                                Don't have an account?{' '}
+                                <Link
+                                    to="/create-account"
+                                    className="font-semibold text-primary-600 hover:text-accent-600 smooth-transition hover:underline"
+                                >
+                                    Create Account
+                                </Link>
+                            </p>
+                        </div>
                     </form>
-                </div >
+                </div>
+
+                {/* Message Display */}
+                {message && (
+                    <div className="mt-6 p-4 glassmorphism bg-white/70 backdrop-blur-sm rounded-xl border border-white/50 animate-fade-in text-center">
+                        <p className={`font-medium ${message.includes('Error') ? 'text-error-600' : 'text-success-600'}`}>
+                            {message}
+                        </p>
+                    </div>
+                )}
             </div>
-
-            <div>
-                {message && <p className="mt-4 text-center text-green-600">{message}</p>}
-            </div >
-        </>
-
+        </div>
     )
 
 }

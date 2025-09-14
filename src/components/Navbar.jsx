@@ -121,8 +121,8 @@ export default function Navbar() {
     const getActiveLinkClass = (item) => {
         const path = item === "Home" ? "/" : `/${item.replace(" ", "-").toLowerCase()}`;
         return location.pathname === path
-            ? "text-yellow-400 underline underline-offset-4"
-            : "text-white";
+            ? "bg-white text-primary-600 shadow-lg scale-105"
+            : "text-white hover:text-primary-200 hover:bg-white/10";
     };
 
     const handleProfileClick = () => navigate('/profile');
@@ -141,128 +141,194 @@ export default function Navbar() {
     }
 
     return (
-
-        <div className="mb-2 shadow-lg">
-            <nav className="flex items-center justify-between px-4 py-3 bg-gradient-to-r from-blue-700 to-blue-500 shadow-xl rounded-b-xl backdrop-blur-md bg-opacity-90">
-
-                {/* Logo Section */}
-                <div className="flex items-center gap-1 pr-3">
-                    <span className="text-white font-extrabold text-2xl tracking-wide drop-shadow-lg">Trez</span>
-                    <img className="bg-transparent drop-shadow-lg" src="/images/finalshoplogo.ico" alt="logo" width="42" height="42" />
-                    <span className="text-white font-extrabold text-2xl tracking-wide drop-shadow-lg">ra</span>
-                </div>
-
-                {/* User Location */}
-                <div className="flex items-center space-x-1 relative pr-3">
-                    <MapPin className="w-5 h-5 text-yellow-400 animate-bounce" />
-                    <div className="hidden lg:flex flex-col text-white text-[10px] leading-tight text-left">
-                        <span className="font-semibold text-[11px]">Deliver To:</span>
-                        <div className="relative group">
-                            <p className="font-medium truncate max-w-[80px] cursor-pointer">
-                                {district}
-                            </p>
-                            <div className="absolute left-1/2 -translate-x-1/2 mt-1 bg-gray-900 text-white text-[9px] px-2 py-1 rounded-md opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-opacity shadow-lg pointer-events-none z-50">
-                                {district}
+        <div className="fixed top-0 left-0 right-0 z-50">
+            {/* Main Navbar */}
+            <nav className="relative">
+                {/* Background with gradient and blur */}
+                <div className="absolute inset-0 bg-gradient-to-r from-primary-600 via-primary-500 to-accent-500 shadow-2xl"></div>
+                <div className="absolute inset-0 backdrop-blur-sm bg-black/10"></div>
+                
+                {/* Content */}
+                <div className="relative flex items-center justify-between px-6 py-4">
+                    
+                    {/* Left Section - Logo */}
+                    <div className="flex items-center group">
+                        <div className="relative">
+                            {/* Logo glow effect */}
+                            <div className="absolute inset-0 bg-white/20 rounded-2xl blur-lg opacity-0 group-hover:opacity-100 smooth-transition scale-110"></div>
+                            
+                            {/* Logo container */}
+                            <div className="relative flex items-center gap-3 px-4 py-2 rounded-2xl bg-white/10 backdrop-blur-sm border border-white/20 hover:bg-white/20 smooth-transition">
+                                <div className="flex items-center gap-1">
+                                    <span className="text-2xl font-black text-white tracking-tight">Trez</span>
+                                    <div className="relative">
+                                        <img
+                                            className="w-8 h-8 drop-shadow-lg transition-transform duration-500 group-hover:rotate-[360deg]"
+                                            src="/images/finalshoplogo.ico"
+                                            alt="logo"
+                                        />
+                                        <div className="absolute inset-0 bg-accent-300/30 rounded-full blur-md opacity-0 group-hover:opacity-100 smooth-transition"></div>
+                                    </div>
+                                    <span className="text-2xl font-black text-white tracking-tight">ra</span>
+                                </div>
+                                <div className="hidden md:block w-px h-6 bg-white/30"></div>
+                                <div className="hidden md:flex flex-col">
+                                    <span className="text-xs font-semibold text-white/90 leading-none">Modern</span>
+                                    <span className="text-xs font-semibold text-accent-200 leading-none">Shopping</span>
+                                </div>
                             </div>
                         </div>
-                        <p className="font-medium">{pincode}</p>
-                    </div>
-                </div>
-
-                {/* Search Bar */}
-                <div className="relative w-3/4 max-w-md">
-                    <div className="flex items-center bg-white/90 backdrop-blur-md rounded-full shadow-md px-2 hover:shadow-lg transition border border-gray-300">
-                        <input
-                            type="text"
-                            className="w-full px-4 py-2 text-lg focus:outline-none rounded-l-full text-gray-700 placeholder-gray-400 focus:ring-2 focus:ring-blue-400"
-                            placeholder="Search Trezora..."
-                            value={query}
-                            onChange={handleSearchInputChange}
-                            onKeyDown={handleSearch}
-                        />
-                        <button
-                            className="p-2 flex items-center justify-center bg-blue-500 text-white rounded-full shadow-md hover:bg-blue-600 focus:ring-2 focus:ring-blue-300 active:scale-90 transition-all"
-                            onClick={handleSearch}
-                            aria-label="Search"
-                        >
-                            <Search className="w-6 h-6" />
-                        </button>
                     </div>
 
-                    {/* Search Suggestions Dropdown */}
-                    {suggestions.length > 0 && (
-                        <ul className="absolute left-0 w-full mt-2 bg-white rounded-lg shadow-lg border border-gray-200 z-50 overflow-hidden">
-                            {suggestions.map((suggestion, index) => (
-                                <li
-                                    key={index}
-                                    className="px-4 py-2 text-gray-700 hover:bg-gray-100 transition cursor-pointer"
-                                    onClick={() => setQuery(suggestion)}
+                    {/* Center Section - Search */}
+                    <div className="flex-1 max-w-2xl mx-8">
+                        <div className="relative">
+                            {/* Search container */}
+                            <div className="relative flex items-center">
+                                <div className="absolute inset-0 bg-white rounded-2xl shadow-2xl"></div>
+                                <div className="absolute inset-0 bg-gradient-to-r from-primary-50 to-accent-50 rounded-2xl opacity-50"></div>
+                                
+                                <div className="relative flex items-center w-full">
+                                    {/* Search icon */}
+                                    <div className="flex items-center pl-6 pr-3">
+                                        <Search className="w-5 h-5 text-neutral-400" />
+                                    </div>
+                                    
+                                    {/* Input */}
+                                    <input
+                                        type="text"
+                                        className="flex-1 py-4 pr-4 text-base font-medium text-neutral-700 placeholder-neutral-400 bg-transparent focus:outline-none"
+                                        placeholder="Search for amazing products, brands, and more..."
+                                        value={query}
+                                        onChange={handleSearchInputChange}
+                                        onKeyDown={handleSearch}
+                                    />
+                                    
+                                    {/* Search button */}
+                                    <button
+                                        onClick={handleSearch}
+                                        className="mr-2 px-6 py-2 bg-gradient-to-r from-primary-500 to-accent-500 text-white font-semibold rounded-xl shadow-lg hover:shadow-glow-purple smooth-transition hover:scale-105 active:scale-95"
+                                    >
+                                        Search
+                                    </button>
+                                </div>
+                            </div>
+
+                            {/* Search Suggestions */}
+                            {suggestions.length > 0 && (
+                                <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-2xl shadow-2xl border border-neutral-100 overflow-hidden z-50 animate-fade-in-down">
+                                    {suggestions.map((suggestion, index) => (
+                                        <button
+                                            key={index}
+                                            className="w-full text-left px-6 py-3 text-neutral-700 hover:bg-gradient-to-r hover:from-primary-50 hover:to-accent-50 smooth-transition border-b border-neutral-50 last:border-b-0"
+                                            onClick={() => setQuery(suggestion)}
+                                        >
+                                            <div className="flex items-center gap-3">
+                                                <Search className="w-4 h-4 text-neutral-400" />
+                                                <span className="font-medium">{suggestion}</span>
+                                            </div>
+                                        </button>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+                    </div>
+
+                    {/* Right Section - Actions */}
+                    <div className="flex items-center gap-4">
+                        
+                        {/* Location (Desktop only) */}
+                        <div className="hidden xl:flex items-center gap-2 px-4 py-2 rounded-xl bg-white/10 backdrop-blur-sm border border-white/20 hover:bg-white/20 smooth-transition">
+                            <MapPin className="w-5 h-5 text-accent-300" />
+                            <div className="flex flex-col">
+                                <span className="text-xs font-medium text-white/80">Deliver to</span>
+                                <span className="text-sm font-bold text-white truncate max-w-24">{district || "Your Location"}</span>
+                            </div>
+                        </div>
+
+                        {/* Profile Actions */}
+                        {isAuthenticated && (
+                            <div className="flex items-center gap-2">
+                                <button
+                                    onClick={handleProfileClick}
+                                    className="p-3 rounded-xl bg-success-500/20 text-success-200 hover:bg-success-500/30 hover:text-success-100 smooth-transition hover:scale-110"
                                 >
-                                    {suggestion}
-                                </li>
-                            ))}
-                        </ul>
-                    )}
-                </div>
+                                    <User className="w-5 h-5" />
+                                </button>
+                                <button
+                                    onClick={handleLogout}
+                                    className="p-3 rounded-xl bg-error-500/20 text-error-200 hover:bg-error-500/30 hover:text-error-100 smooth-transition hover:scale-110"
+                                >
+                                    <LogOut className="w-5 h-5" />
+                                </button>
+                            </div>
+                        )}
 
-
-                {/* Navigation Links */}
-                <div className="hidden md:flex gap-4 px-4">
-                    {navComponents.map((item) => (
-                        <Link
-                            key={item}
-                            to={item === "Home" ? "/" : `/${item.replace(" ", "-").toLowerCase()}`}
-                            className={`text-lg font-semibold whitespace-nowrap transition-all duration-300 ease-in-out text-white hover:text-yellow-300 hover:scale-110 transform ${getActiveLinkClass(item)}`}
-                        >
-                            {item}
+                        {/* Cart */}
+                        <Link to="/cart" className="relative group">
+                            <div className="p-3 rounded-xl bg-white/20 hover:bg-white/30 smooth-transition hover:scale-110 border border-white/30">
+                                <svg
+                                    className="w-6 h-6 text-white group-hover:text-accent-200 smooth-transition"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth={2}
+                                        d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17M17 13v4a2 2 0 01-2 2H9a2 2 0 01-2-2v-4m8 0V9a2 2 0 00-2-2H9a2 2 0 00-2 2v4.01"
+                                    />
+                                </svg>
+                                {cartCount > 0 && (
+                                    <span className="absolute -top-1 -right-1 bg-gradient-to-r from-accent-500 to-accent-600 text-white text-xs font-bold rounded-full w-6 h-6 flex items-center justify-center shadow-lg animate-pulse">
+                                        {cartCount}
+                                    </span>
+                                )}
+                            </div>
                         </Link>
-                    ))}
-                </div>
-
-                {/* Profile & Logout Buttons (Only when authenticated) */}
-                {isAuthenticated && (
-                    <div className="flex gap-2 ml-2">
-                        <button
-                            onClick={handleProfileClick}
-                            className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-green-500 to-green-600 text-white font-semibold rounded-full shadow-md hover:scale-110 transition-all duration-300 ease-in-out hover:from-green-600 hover:to-green-700"
-                        >
-                            <User className="w-6 h-6" />
-                        </button>
-                        <button
-                            onClick={handleLogout}
-                            className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-red-500 to-red-600 text-white font-semibold rounded-full shadow-md hover:scale-110 transition-all duration-300 ease-in-out hover:from-red-600 hover:to-red-700"
-                        >
-                            <LogOut className="w-5 h-5" />
-                        </button>
                     </div>
-                )}
-
-                {/* Cart Section */}
-                <div className="relative flex items-center ml-2">
-                    <Link to="/cart" className="relative">
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="white"
-                            viewBox="0 0 24 24"
-                            strokeWidth="1.5"
-                            stroke="currentColor"
-                            className="w-9 h-9 hover:text-yellow-300 transition-transform transform hover:scale-110"
-                        >
-                            <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                d="M2.25 3h1.386c.51 0 .955.343 1.084.835l.383 1.438m0 0L6.75 13.5h10.5l1.647-6.177a1.125 1.125 0 00-1.084-1.448H5.103m0 0L4.5 5.25m13.5 12a1.125 1.125 0 11-2.25 0 1.125 1.125 0 012.25 0zm-9 0a1.125 1.125 0 11-2.25 0 1.125 1.125 0 012.25 0z"
-                            />
-                        </svg>
-                        <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center shadow-md">
-                            {cartCount}
-                        </span>
-                    </Link>
                 </div>
             </nav>
+
+            {/* Secondary Navigation Bar */}
+            <div className="bg-white/95 backdrop-blur-sm border-b border-neutral-200 shadow-lg">
+                <div className="px-6 py-3">
+                    <div className="flex items-center justify-between">
+                        
+                        {/* Navigation Links */}
+                        <div className="flex items-center gap-1">
+                            {navComponents.map((item, index) => (
+                                <Link
+                                    key={item}
+                                    to={item === "Home" ? "/" : `/${item.replace(" ", "-").toLowerCase()}`}
+                                    className={`relative px-4 py-2 text-sm font-semibold rounded-xl smooth-transition transform hover:scale-105 ${getActiveLinkClass(item)}`}
+                                    style={{ animationDelay: `${index * 50}ms` }}
+                                >
+                                    {item}
+                                    {location.pathname === (item === "Home" ? "/" : `/${item.replace(" ", "-").toLowerCase()}`) && (
+                                        <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-primary-500 rounded-full animate-bounce"></div>
+                                    )}
+                                </Link>
+                            ))}
+                        </div>
+
+                        {/* Quick Actions */}
+                        <div className="hidden md:flex items-center gap-4 text-sm font-medium text-neutral-600">
+                            <div className="flex items-center gap-2">
+                                <div className="w-2 h-2 bg-success-400 rounded-full animate-pulse"></div>
+                                <span>Free Shipping on orders $50+</span>
+                            </div>
+                            <div className="w-px h-4 bg-neutral-300"></div>
+                            <div className="flex items-center gap-2">
+                                <div className="w-2 h-2 bg-accent-400 rounded-full animate-pulse"></div>
+                                <span>24/7 Customer Support</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-
-
     );
 }
 
