@@ -1,22 +1,21 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 
 const ProductDetails = () => {
   const { productId } = useParams();
+  const navigate = useNavigate();
   const [product, setProduct] = useState(null);
-  const [zoomStyle, setZoomStyle] = useState({ display: "none" });
-  const [wishlist, setWishlist] = useState(false); // Wishlist state
+  const [wishlist, setWishlist] = useState(() => {
+    const saved = localStorage.getItem("wishlist");
+    return saved ? JSON.parse(saved) : [];
+  });
 
   useEffect(() => {
     axios
       .get(`http://127.0.0.1:8000/api/get-product-by-id/${productId}/`)
-      .then((response) => {
-        setProduct(response.data);
-      })
-      .catch((error) => {
-        console.error("Error fetching product:", error);
-      });
+      .then((response) => setProduct(response.data))
+      .catch((error) => console.error("Error fetching product:", error));
   }, [productId]);
 
   if (!product) {
@@ -51,9 +50,9 @@ const ProductDetails = () => {
     setZoomStyle({ display: "none" });
   };
 
-  // Wishlist toggle function
-  const toggleWishlist = () => {
-    setWishlist(!wishlist);
+  // Navigate to Wishlist Page
+  const goToWishlist = () => {
+    navigate("/wishlist");
   };
 
   return (
@@ -86,8 +85,8 @@ const ProductDetails = () => {
                 {/* Wishlist Button */}
                 <button
                   className={`absolute top-4 right-4 w-12 h-12 rounded-full glassmorphism backdrop-blur-lg shadow-medium smooth-transition hover:scale-110 focus:outline-none focus:ring-2 focus:ring-primary-300 ${wishlist
-                      ? "bg-error-500/20 text-error-500 hover:bg-error-500/30"
-                      : "bg-white/20 text-neutral-400 hover:bg-white/30 hover:text-error-400"
+                    ? "bg-error-500/20 text-error-500 hover:bg-error-500/30"
+                    : "bg-white/20 text-neutral-400 hover:bg-white/30 hover:text-error-400"
                     }`}
                   onClick={toggleWishlist}
                 >
@@ -237,4 +236,5 @@ const ProductDetails = () => {
 };
 
 export default ProductDetails;
+
 
