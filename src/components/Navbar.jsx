@@ -121,8 +121,8 @@ export default function Navbar() {
     const getActiveLinkClass = (item) => {
         const path = item === "Home" ? "/" : `/${item.replace(" ", "-").toLowerCase()}`;
         return location.pathname === path
-            ? "bg-white text-primary-600 shadow-lg scale-105"
-            : "text-white hover:text-primary-200 hover:bg-white/10";
+            ? "bg-primary-600 text-white shadow-md"
+            : "text-neutral-700 hover:text-primary-600 hover:bg-neutral-100";
     };
 
     const handleProfileClick = () => navigate('/profile');
@@ -147,16 +147,16 @@ export default function Navbar() {
                 {/* Background with gradient and blur */}
                 <div className="absolute inset-0 bg-gradient-to-r from-primary-600 via-primary-500 to-accent-500 shadow-2xl"></div>
                 <div className="absolute inset-0 backdrop-blur-sm bg-black/10"></div>
-                
+
                 {/* Content */}
-                <div className="relative flex items-center justify-between px-6 py-4">
-                    
+                <div className="relative flex items-center justify-between px-4 py-2">
+
                     {/* Left Section - Logo */}
                     <div className="flex items-center group">
                         <div className="relative">
                             {/* Logo glow effect */}
                             <div className="absolute inset-0 bg-white/20 rounded-2xl blur-lg opacity-0 group-hover:opacity-100 smooth-transition scale-110"></div>
-                            
+
                             {/* Logo container */}
                             <div className="relative flex items-center gap-3 px-4 py-2 rounded-2xl bg-white/10 backdrop-blur-sm border border-white/20 hover:bg-white/20 smooth-transition">
                                 <div className="flex items-center gap-1">
@@ -181,35 +181,36 @@ export default function Navbar() {
                     </div>
 
                     {/* Center Section - Search */}
-                    <div className="flex-1 max-w-2xl mx-8">
+                    <div className="flex-1 max-w-xl mx-2 sm:mx-4 md:mx-6 lg:mx-8">
                         <div className="relative">
                             {/* Search container */}
                             <div className="relative flex items-center">
-                                <div className="absolute inset-0 bg-white rounded-2xl shadow-2xl"></div>
-                                <div className="absolute inset-0 bg-gradient-to-r from-primary-50 to-accent-50 rounded-2xl opacity-50"></div>
-                                
+                                <div className="absolute inset-0 bg-white rounded-xl md:rounded-2xl shadow-lg md:shadow-2xl"></div>
+                                <div className="absolute inset-0 bg-gradient-to-r from-primary-50 to-accent-50 rounded-xl md:rounded-2xl opacity-50"></div>
+
                                 <div className="relative flex items-center w-full">
                                     {/* Search icon */}
-                                    <div className="flex items-center pl-6 pr-3">
-                                        <Search className="w-5 h-5 text-neutral-400" />
+                                    <div className="flex items-center pl-3 sm:pl-4 md:pl-6 pr-2 sm:pr-3">
+                                        <Search className="w-4 h-4 sm:w-5 sm:h-5 text-neutral-400" />
                                     </div>
-                                    
+
                                     {/* Input */}
                                     <input
                                         type="text"
-                                        className="flex-1 py-4 pr-4 text-base font-medium text-neutral-700 placeholder-neutral-400 bg-transparent focus:outline-none"
-                                        placeholder="Search for amazing products, brands, and more..."
+                                        className="flex-1 py-2 sm:py-3 md:py-4 pr-2 sm:pr-3 md:pr-4 text-sm sm:text-base font-medium text-neutral-700 placeholder-neutral-400 bg-transparent focus:outline-none"
+                                        placeholder="Search products..."
                                         value={query}
                                         onChange={handleSearchInputChange}
                                         onKeyDown={handleSearch}
                                     />
-                                    
+
                                     {/* Search button */}
                                     <button
                                         onClick={handleSearch}
-                                        className="mr-2 px-6 py-2 bg-gradient-to-r from-primary-500 to-accent-500 text-white font-semibold rounded-xl shadow-lg hover:shadow-glow-purple smooth-transition hover:scale-105 active:scale-95"
+                                        className="mr-1 sm:mr-2 px-3 sm:px-4 md:px-6 py-1 sm:py-2 bg-gradient-to-r from-primary-500 to-accent-500 text-white text-xs sm:text-sm font-medium sm:font-semibold rounded-lg md:rounded-xl shadow-lg hover:shadow-glow-purple smooth-transition hover:scale-105 active:scale-95"
                                     >
-                                        Search
+                                        <span className="hidden sm:inline">Search</span>
+                                        <Search className="w-4 h-4 sm:hidden" />
                                     </button>
                                 </div>
                             </div>
@@ -236,7 +237,7 @@ export default function Navbar() {
 
                     {/* Right Section - Actions */}
                     <div className="flex items-center gap-4">
-                        
+
                         {/* Location (Desktop only) */}
                         <div className="hidden xl:flex items-center gap-2 px-4 py-2 rounded-xl bg-white/10 backdrop-blur-sm border border-white/20 hover:bg-white/20 smooth-transition">
                             <MapPin className="w-5 h-5 text-accent-300" />
@@ -265,7 +266,7 @@ export default function Navbar() {
                         )}
 
                         {/* Cart */}
-                        <Link to="/cart" className="relative group">
+                        <Link to="/cart" className="relative group ml-3">
                             <div className="p-3 rounded-xl bg-white/20 hover:bg-white/30 smooth-transition hover:scale-110 border border-white/30">
                                 <svg
                                     className="w-6 h-6 text-white group-hover:text-accent-200 smooth-transition"
@@ -277,11 +278,11 @@ export default function Navbar() {
                                         strokeLinecap="round"
                                         strokeLinejoin="round"
                                         strokeWidth={2}
-                                        d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17M17 13v4a2 2 0 01-2 2H9a2 2 0 01-2-2v-4m8 0V9a2 2 0 00-2-2H9a2 2 0 00-2 2v4.01"
+                                        d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-1.5 1.5M16 16H8m8 0a2 2 0 100 4 2 2 0 000-4zm-8 0a2 2 0 100 4 2 2 0 000-4z"
                                     />
                                 </svg>
                                 {cartCount > 0 && (
-                                    <span className="absolute -top-1 -right-1 bg-gradient-to-r from-accent-500 to-accent-600 text-white text-xs font-bold rounded-full w-6 h-6 flex items-center justify-center shadow-lg animate-pulse">
+                                    <span className="absolute -top-2 -right-2 bg-gradient-to-r from-accent-500 to-accent-600 text-white text-xs font-bold rounded-full w-6 h-6 flex items-center justify-center shadow-lg animate-pulse border-2 border-white z-10">
                                         {cartCount}
                                     </span>
                                 )}
@@ -292,38 +293,33 @@ export default function Navbar() {
             </nav>
 
             {/* Secondary Navigation Bar */}
-            <div className="bg-white/95 backdrop-blur-sm border-b border-neutral-200 shadow-lg">
-                <div className="px-6 py-3">
+            <div className="bg-white border-b border-neutral-200 shadow-sm">
+                <div className="px-4 sm:px-6 py-2 sm:py-3">
                     <div className="flex items-center justify-between">
-                        
+
                         {/* Navigation Links */}
-                        <div className="flex items-center gap-1">
+                        <div className="flex items-center gap-1 overflow-x-auto scrollbar-hide">
                             {navComponents.map((item, index) => (
                                 <Link
                                     key={item}
                                     to={item === "Home" ? "/" : `/${item.replace(" ", "-").toLowerCase()}`}
-                                    className={`relative px-4 py-2 text-sm font-semibold rounded-xl smooth-transition transform hover:scale-105 ${getActiveLinkClass(item)}`}
-                                    style={{ animationDelay: `${index * 50}ms` }}
+                                    className={`flex-shrink-0 px-2 sm:px-3 md:px-4 py-1 sm:py-2 text-xs sm:text-sm font-medium rounded-lg smooth-transition ${getActiveLinkClass(item)}`}
                                 >
                                     {item}
-                                    {location.pathname === (item === "Home" ? "/" : `/${item.replace(" ", "-").toLowerCase()}`) && (
-                                        <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-primary-500 rounded-full animate-bounce"></div>
-                                    )}
                                 </Link>
                             ))}
                         </div>
 
                         {/* Quick Actions */}
-                        <div className="hidden md:flex items-center gap-4 text-sm font-medium text-neutral-600">
-                            <div className="flex items-center gap-2">
-                                <div className="w-2 h-2 bg-success-400 rounded-full animate-pulse"></div>
-                                <span>Free Shipping on orders $50+</span>
-                            </div>
-                            <div className="w-px h-4 bg-neutral-300"></div>
-                            <div className="flex items-center gap-2">
-                                <div className="w-2 h-2 bg-accent-400 rounded-full animate-pulse"></div>
-                                <span>24/7 Customer Support</span>
-                            </div>
+                        <div className="hidden lg:flex items-center gap-4 text-xs text-neutral-600">
+                            <span className="flex items-center gap-1">
+                                <div className="w-2 h-2 bg-success-400 rounded-full"></div>
+                                Free Shipping $50+
+                            </span>
+                            <span className="flex items-center gap-1">
+                                <div className="w-2 h-2 bg-accent-400 rounded-full"></div>
+                                24/7 Support
+                            </span>
                         </div>
                     </div>
                 </div>
