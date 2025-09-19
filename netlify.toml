@@ -10,11 +10,12 @@
   INLINE_RUNTIME_CHUNK = "false"
   NODE_ENV = "production"
 
-# Redirect all routes to index.html for SPA routing
+# Redirect all routes to index.html for SPA routing (exclude files with extensions)
 [[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
+  force = false
 
 # API Proxy for development (optional)
 [[redirects]]
@@ -31,12 +32,26 @@
     X-XSS-Protection = "1; mode=block"
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "strict-origin-when-cross-origin"
-    Permissions-Policy = "camera=(), microphone=(), geolocation=()"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=(self)"
 
 # Cache static assets aggressively
 [[headers]]
   for = "/static/*"
   [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# Ensure CSS files have correct MIME type
+[[headers]]
+  for = "*.css"
+  [headers.values]
+    Content-Type = "text/css"
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# Ensure JS files have correct MIME type
+[[headers]]
+  for = "*.js"
+  [headers.values]
+    Content-Type = "application/javascript"
     Cache-Control = "public, max-age=31536000, immutable"
 
 # Cache service worker
