@@ -56,22 +56,21 @@ export default function Checkout() {
     };
 
     const CompleteOrder = async () => {
+        if (cartData.length === 0) {
+            setError("Your cart is empty. Add items before placing an order.");
+            return;
+        }
         if (!paymentMethod) {
             setError("Please select a payment method to continue.");
             return;
         }
-
         if (!apiData?.address?.address) {
             setError("Please add your delivery address to continue.");
             return;
         }
-
         setLoading(true);
         setError('');
-
         try {
-            // The backend automatically creates orders from cart items
-            // We just need to send payment method and address info
             const orderData = {
                 payment_method: paymentMethod,
                 address_details: {
@@ -82,16 +81,13 @@ export default function Checkout() {
                     country: "India"
                 }
             };
-
             const response = await axios.post(`${API_URL}/api/post-orders/`, orderData, {
                 headers: {
                     Authorization: `Bearer ${user}`,
                     'Content-Type': 'application/json'
                 }
             });
-
             if (response.data.success) {
-                // Cart is automatically cleared by the backend after order creation
                 navigate('/orders', {
                     state: { justOrdered: true, orderId: response.data.order_id },
                     replace: true

@@ -13,25 +13,22 @@ export default function Wishlist() {
 
     const fetchWishlist = async () => {
         if (!isAuthenticated) {
+            setError('Please sign in to view your wishlist');
             setLoading(false);
             return;
         }
-
         try {
             setLoading(true);
-            console.log('Fetching wishlist from:', `${API_URL}/api/get-wishlist/`);
             const response = await axios.get(`${API_URL}/api/get-wishlist/`, {
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
                 },
             });
-
-            console.log('Wishlist API response:', response.data);
-
-            if (response.data.success) {
+            if (response.data.success && Array.isArray(response.data.data)) {
                 setWishlistItems(response.data.data);
+                setError('');
             } else {
-                setError('Failed to load wishlist');
+                setError(response.data.message || 'Failed to load wishlist');
             }
         } catch (err) {
             console.error('Error fetching wishlist:', err);
