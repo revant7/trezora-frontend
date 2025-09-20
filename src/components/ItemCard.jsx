@@ -2,11 +2,13 @@ import React, { useContext, useState, useEffect } from 'react'
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import UpdateCartCountContext from "../context/UpdateCartCount";
+import { useToast } from "../context/ToastContext";
 
 export default function ItemCard({ unique_id, name, brand, price, mrp, product_category, image, product_rating }) {
     const API_URL = process.env.REACT_APP_API_URL;
     const navigate = useNavigate();
     const { setCartCount } = useContext(UpdateCartCountContext);
+    const { showSuccess, showError } = useToast();
     const [isInWishlist, setIsInWishlist] = useState(false);
     const [wishlistLoading, setWishlistLoading] = useState(false);
 
@@ -48,8 +50,12 @@ export default function ItemCard({ unique_id, name, brand, price, mrp, product_c
                     }
                 });
                 setCartCount(response1.data.length);
+
+                // Show success toast
+                showSuccess(`${name} added to cart!`);
             } catch (error) {
                 console.error('Error adding to cart:', error);
+                showError('Failed to add item to cart. Please try again.');
             }
         }
     };
@@ -71,6 +77,7 @@ export default function ItemCard({ unique_id, name, brand, price, mrp, product_c
                     data: { unique_id: unique_id }
                 });
                 setIsInWishlist(false);
+                showSuccess(`${name} removed from wishlist`);
             } else {
                 // Add to wishlist
                 await axios.post(`${API_URL}/api/add-to-wishlist/`,
@@ -78,9 +85,11 @@ export default function ItemCard({ unique_id, name, brand, price, mrp, product_c
                     { headers: { Authorization: `Bearer ${user}` } }
                 );
                 setIsInWishlist(true);
+                showSuccess(`${name} added to wishlist!`);
             }
         } catch (error) {
             console.error('Error toggling wishlist:', error);
+            showError('Failed to update wishlist. Please try again.');
         } finally {
             setWishlistLoading(false);
         }

@@ -2,12 +2,14 @@ import React, { useState, useEffect, useContext } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import UpdateCartCountContext from "../context/UpdateCartCount";
+import { useToast } from "../context/ToastContext";
 
 const ProductDetails = () => {
   const { productId } = useParams();
   const navigate = useNavigate();
   const API_URL = process.env.REACT_APP_API_URL;
   const { setCartCount } = useContext(UpdateCartCountContext);
+  const { showSuccess, showError } = useToast();
 
   const [product, setProduct] = useState(null);
   const [zoomStyle, setZoomStyle] = useState({ display: "none" });
@@ -62,6 +64,7 @@ const ProductDetails = () => {
           data: { unique_id: productId }
         });
         setIsInWishlist(false);
+        showSuccess(`${product?.name} removed from wishlist`);
       } else {
         // Add to wishlist
         await axios.post(`${API_URL}/api/add-to-wishlist/`,
@@ -69,9 +72,11 @@ const ProductDetails = () => {
           { headers: { Authorization: `Bearer ${user}` } }
         );
         setIsInWishlist(true);
+        showSuccess(`${product?.name} added to wishlist!`);
       }
     } catch (error) {
       console.error('Error toggling wishlist:', error);
+      showError('Failed to update wishlist. Please try again.');
     } finally {
       setWishlistLoading(false);
     }
@@ -100,11 +105,11 @@ const ProductDetails = () => {
       });
       setCartCount(cartResponse.data.length);
 
-      // Show success message or redirect to cart
-      alert('Product added to cart successfully!');
+      // Show success toast
+      showSuccess(`${product.name} added to cart!`);
     } catch (error) {
       console.error('Error adding to cart:', error);
-      alert('Error adding product to cart. Please try again.');
+      showError('Failed to add item to cart. Please try again.');
     } finally {
       setCartLoading(false);
     }

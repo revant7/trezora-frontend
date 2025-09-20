@@ -2,11 +2,13 @@ import React, { useState, useEffect, useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import UpdateCartCountContext from "../context/UpdateCartCount";
+import { useToast } from "../context/ToastContext";
 
 const TodaysDeals = () => {
   const API_URL = process.env.REACT_APP_API_URL;
   const navigate = useNavigate();
   const { setCartCount } = useContext(UpdateCartCountContext);
+  const { showSuccess, showError } = useToast();
 
   const [deals, setDeals] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -137,8 +139,13 @@ const TodaysDeals = () => {
       });
       setCartCount(cartResponse.data.length);
 
+      // Find the product name to show in toast
+      const product = deals.find(deal => deal.unique_id === productId);
+      showSuccess(`${product?.name || 'Product'} added to cart!`);
+
     } catch (error) {
       console.error('Error adding to cart:', error);
+      showError('Failed to add item to cart. Please try again.');
     }
   };
 

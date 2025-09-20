@@ -16,8 +16,8 @@ export default function Checkout() {
     // Get user token
     const user = localStorage.getItem('accessToken');
 
-    // Calculate cart totals
-    const subtotal = cartData.reduce((total, item) => total + (item.prod_price * item.quantity), 0);
+    // Calculate cart totals - backend uses prod_price and prod_quantity field names
+    const subtotal = cartData.reduce((total, item) => total + (item.prod_price * item.prod_quantity), 0);
     const tax = subtotal * 0.1; // 10% tax
     const deliverycharge = subtotal > 500 ? 0 : 50; // Free delivery above ₹500
     const total = subtotal + tax + deliverycharge;
@@ -29,7 +29,7 @@ export default function Checkout() {
 
     const fetchApiData = async () => {
         try {
-            const response = await axios.get(`${API_URL}/api/user-profile/`, {
+            const response = await axios.get(`${API_URL}/api/get-profile-details/`, {
                 headers: {
                     Authorization: `Bearer ${user}`
                 }
@@ -43,7 +43,7 @@ export default function Checkout() {
 
     const fetchCartData = async () => {
         try {
-            const response = await axios.get(`${API_URL}/api/cart/`, {
+            const response = await axios.get(`${API_URL}/api/get-cart-items/`, {
                 headers: {
                     Authorization: `Bearer ${user}`
                 }
@@ -70,24 +70,20 @@ export default function Checkout() {
         setError('');
 
         try {
+            // The backend automatically creates orders from cart items
+            // We just need to send payment method and address info
             const orderData = {
-                items: cartData.map(item => ({
-                    product_id: item.prod_id,
-                    quantity: item.quantity,
-                    price: item.prod_price
-                })),
                 payment_method: paymentMethod,
-                shipping_address: {
+                address_details: {
                     address: apiData.address.address,
                     city: apiData.address.city,
                     state: apiData.address.state,
                     pincode: apiData.address.pincode,
                     country: "India"
-                },
-                order_total: total
+                }
             };
 
-            const response = await axios.post(`${API_URL}/api/create-order/`, orderData, {
+            const response = await axios.post(`${API_URL}/api/post-orders/`, orderData, {
                 headers: {
                     Authorization: `Bearer ${user}`,
                     'Content-Type': 'application/json'
@@ -95,12 +91,7 @@ export default function Checkout() {
             });
 
             if (response.data.success) {
-                // Clear cart after successful order
-                await axios.delete(`${API_URL}/api/clear-cart/`, {
-                    headers: {
-                        Authorization: `Bearer ${user}`
-                    }
-                });
+                // Cart is automatically cleared by the backend after order creation
                 navigate('/orders', {
                     state: { justOrdered: true, orderId: response.data.order_id },
                     replace: true
@@ -425,8 +416,8 @@ export default function Checkout() {
 
                             <button
                                 className={`w-full py-4 rounded-2xl font-bold text-lg smooth-transition transform active:scale-95 ${loading || apiData === null || !apiData?.address?.address || !paymentMethod
-                                        ? 'bg-neutral-300 text-neutral-500 cursor-not-allowed'
-                                        : 'bg-gradient-to-r from-primary-500 to-accent-500 text-white shadow-large hover:shadow-glow-purple hover:scale-[1.02]'
+                                    ? 'bg-neutral-300 text-neutral-500 cursor-not-allowed'
+                                    : 'bg-gradient-to-r from-primary-500 to-accent-500 text-white shadow-large hover:shadow-glow-purple hover:scale-[1.02]'
                                     }`}
                                 disabled={loading || apiData === null || !apiData?.address?.address || !paymentMethod}
                                 onClick={CompleteOrder}
