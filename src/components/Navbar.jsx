@@ -244,12 +244,50 @@ export default function Navbar() {
                     <div className="flex items-center gap-4">
 
                         {/* Location (Desktop only) */}
-                        <div className="hidden xl:flex items-center gap-2 px-4 py-2 rounded-xl bg-white/10 backdrop-blur-sm border border-white/20 hover:bg-white/20 smooth-transition">
+                        <div className="hidden xl:flex items-center gap-2 px-4 py-2 rounded-xl bg-white/10 backdrop-blur-sm border border-white/20 hover:bg-white/20 smooth-transition relative group">
                             <MapPin className="w-5 h-5 text-accent-300" />
                             <div className="flex flex-col">
                                 <span className="text-xs font-medium text-white/80">Deliver to</span>
                                 <span className="text-sm font-bold text-white truncate max-w-24">{district || "Your Location"}</span>
                             </div>
+
+                            {/* Tooltip with full location on hover */}
+                            {(village || district || pincode !== "Fetching..." && pincode !== "Error" && pincode !== "Not Found") && (
+                                <div className="absolute top-full left-0 mt-2 w-64 p-3 bg-white rounded-lg shadow-2xl border border-neutral-200 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50">
+                                    <div className="text-sm font-semibold text-neutral-800 mb-2">Full Address:</div>
+                                    <div className="text-sm text-neutral-600 space-y-1">
+                                        {village && <div>{village.replace(', ', '')}</div>}
+                                        {district && <div>{district.replace(', ', '')}</div>}
+                                        {pincode && pincode !== "Fetching..." && pincode !== "Error" && pincode !== "Not Found" && (
+                                            <div>PIN: {pincode}</div>
+                                        )}
+                                    </div>
+                                    {/* Arrow pointer */}
+                                    <div className="absolute -top-1 left-4 w-2 h-2 bg-white transform rotate-45 border-l border-t border-neutral-200"></div>
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Location (Mobile - Compact) */}
+                        <div className="xl:hidden flex items-center gap-1 px-2 py-2 rounded-lg bg-white/10 backdrop-blur-sm border border-white/20 hover:bg-white/20 smooth-transition relative group">
+                            <MapPin className="w-4 h-4 text-accent-300" />
+                            <span className="text-xs font-bold text-white truncate max-w-16">{district ? district.replace(', ', '') : "Location"}</span>
+
+                            {/* Mobile Tooltip with full location on hover/tap */}
+                            {(village || district || pincode !== "Fetching..." && pincode !== "Error" && pincode !== "Not Found") && (
+                                <div className="absolute top-full right-0 mt-2 w-56 p-3 bg-white rounded-lg shadow-2xl border border-neutral-200 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50">
+                                    <div className="text-sm font-semibold text-neutral-800 mb-2">Delivery Location:</div>
+                                    <div className="text-sm text-neutral-600 space-y-1">
+                                        {village && <div>{village.replace(', ', '')}</div>}
+                                        {district && <div>{district.replace(', ', '')}</div>}
+                                        {pincode && pincode !== "Fetching..." && pincode !== "Error" && pincode !== "Not Found" && (
+                                            <div>PIN: {pincode}</div>
+                                        )}
+                                    </div>
+                                    {/* Arrow pointer */}
+                                    <div className="absolute -top-1 right-4 w-2 h-2 bg-white transform rotate-45 border-l border-t border-neutral-200"></div>
+                                </div>
+                            )}
                         </div>
 
                         {/* Profile Actions */}
